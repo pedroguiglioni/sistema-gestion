@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGI Pro — Sistema de Gestión Inmobiliaria Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f2f5;--white:#fff;--osc:#111827;--osc2:#1f2937;
+  --v:#059669;--vc:#ecfdf5;--vb:#10b981;
+  --r:#dc2626;--rc:#fef2f2;--rb:#ef4444;
+  --a:#2563eb;--ac:#eff6ff;--ab:#3b82f6;
+  --n:#d97706;--nc:#fffbeb;--nb:#f59e0b;
+  --p:#7c3aed;--pc:#f5f3ff;--pb:#8b5cf6;
+  --g:#e5e7eb;--g2:#f9fafb;--mu:#6b7280;
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+  --sh:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shl:0 4px 24px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--osc);font-size:14px;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:230px;background:var(--osc);flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:50;overflow-y:auto;display:flex;flex-direction:column;}
+.slogo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.slogo-main{font-size:16px;font-weight:900;color:white;}
+.slogo-sub{font-size:10px;color:#6b7280;margin-top:2px;}
+.snav{padding:12px 10px 4px;}
+.snav-lbl{font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:2px;padding:0 8px;margin-bottom:5px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:600;color:#9ca3af;cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:var(--font);margin-bottom:1px;}
+.ni:hover{background:rgba(255,255,255,0.07);color:white;}
+.ni.active{background:rgba(255,255,255,0.13);color:white;}
+.ni-ic{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.nb2{margin-left:auto;font-size:10px;font-weight:800;padding:2px 6px;border-radius:20px;}
+.nb2.v{background:var(--v);color:white;}.nb2.r{background:var(--r);color:white;}.nb2.n{background:var(--n);color:white;}.nb2.a{background:var(--a);color:white;}
+.sfooter{margin-top:auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.08);}
+.urow{display:flex;align-items:center;gap:10px;}
+.uav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0;}
+
+.main{margin-left:230px;flex:1;}
+.topbar{background:var(--white);border-bottom:1px solid var(--g);padding:0 22px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;box-shadow:0 1px 0 var(--g);}
+.tb-title{font-size:15px;font-weight:800;}
+.tb-date{font-size:11px;color:var(--mu);background:var(--g);padding:3px 10px;border-radius:20px;margin-left:10px;}
+.content{padding:20px 22px;}
+
+/* SCREENS */
+.sc{display:none;}.sc.active{display:block;animation:fi 0.18s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HD */
+.phd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.phd-t{font-size:20px;font-weight:900;margin-bottom:3px;}
+.phd-s{font-size:12px;color:var(--mu);}
+.phd-r{display:flex;gap:8px;align-items:center;}
+
+/* STATS */
+.sg{display:grid;gap:11px;margin-bottom:18px;}
+.sg5{grid-template-columns:repeat(5,1fr);}
+.sg4{grid-template-columns:repeat(4,1fr);}
+.sg3{grid-template-columns:repeat(3,1fr);}
+.sg2{grid-template-columns:repeat(2,1fr);}
+.stc{background:var(--white);border-radius:12px;padding:15px 17px;box-shadow:var(--sh);border:1px solid var(--g);border-top:3px solid transparent;}
+.stc.v{border-top-color:var(--vb)}.stc.r{border-top-color:var(--rb)}.stc.a{border-top-color:var(--ab)}.stc.n{border-top-color:var(--nb)}.stc.p{border-top-color:var(--pb)}
+.stc-l{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
+.stc-v{font-size:22px;font-weight:900;}
+.stc-v.v{color:var(--v)}.stc-v.r{color:var(--r)}.stc-v.a{color:var(--a)}.stc-v.n{color:var(--n)}.stc-v.p{color:var(--p)}
+.stc-s{font-size:11px;color:#9ca3af;margin-top:3px;}
+
+/* CARD */
+.card{background:var(--white);border-radius:12px;border:1px solid var(--g);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px;}
+.card-h{padding:13px 18px;border-bottom:1px solid var(--g);display:flex;align-items:center;justify-content:space-between;}
+.card-t{font-size:13px;font-weight:800;}
+.card-s{font-size:11px;color:var(--mu);margin-top:2px;}
+
+/* TABLA */
+.ts{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:700px;}
+thead th{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;padding:9px 13px;text-align:left;background:var(--g2);border-bottom:1px solid var(--g);white-space:nowrap;}
+tbody tr{border-bottom:1px solid #f3f4f6;transition:background 0.1s;}
+tbody tr:hover{background:#fafbff;}
+tbody td{padding:11px 13px;vertical-align:middle;}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+.bdg.v{background:var(--vc);color:var(--v)}.bdg.r{background:var(--rc);color:var(--r)}
+.bdg.a{background:var(--ac);color:var(--a)}.bdg.n{background:var(--nc);color:var(--n)}
+.bdg.p{background:var(--pc);color:var(--p)}.bdg.g{background:#f3f4f6;color:var(--mu)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;transition:all 0.15s;}
+.btn.v{background:var(--v);color:white;}.btn.v:hover{background:#047857;}
+.btn.r{background:var(--r);color:white;}.btn.r:hover{background:#b91c1c;}
+.btn.a{background:var(--a);color:white;}.btn.a:hover{background:#1d4ed8;}
+.btn.n{background:var(--n);color:white;}.btn.n:hover{background:#b45309;}
+.btn.p{background:var(--p);color:white;}.btn.p:hover{background:#6d28d9;}
+.btn.osc{background:var(--osc);color:white;}.btn.osc:hover{background:#374151;}
+.btn.gh{background:var(--white);color:var(--osc);border:1.5px solid var(--g);}.btn.gh:hover{background:var(--g2);}
+.btn.sm{padding:5px 10px;font-size:11px;}
+.btn.lg{padding:12px 22px;font-size:14px;}
+
+/* INPUTS */
+.inp,.sel,.ta{width:100%;padding:9px 12px;font-size:13px;font-family:var(--font);font-weight:600;border:1.5px solid var(--g);border-radius:9px;background:var(--white);color:var(--osc);outline:none;transition:border-color 0.2s;appearance:none;}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--ab);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+.inp::placeholder{color:#d1d5db;font-weight:500;}
+.inp.mono{font-family:var(--mono);letter-spacing:1px;}
+.ta{resize:vertical;min-height:65px;font-size:12px;}
+
+/* FORM */
+.fsec{background:var(--white);border-radius:12px;border:1px solid var(--g);padding:18px;margin-bottom:12px;box-shadow:var(--sh);}
+.fsec-t{font-size:13px;font-weight:800;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--g);}
+.fg{margin-bottom:12px;}
+.fg label{font-size:11px;font-weight:700;color:var(--osc2);display:block;margin-bottom:5px;}
+.g2f{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3f{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.sp2{grid-column:1/-1;}
+
+/* PROPIETARIO CARD */
+.pcard{background:var(--white);border-radius:14px;border:1px solid var(--g);box-shadow:var(--sh);margin-bottom:12px;overflow:hidden;transition:box-shadow 0.2s;}
+.pcard:hover{box-shadow:var(--shl);}
+.pcard-h{padding:16px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.pcard-h:hover{background:var(--g2);}
+.pcard-av{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:white;flex-shrink:0;}
+.pcard-nm{font-size:15px;font-weight:800;margin-bottom:2px;}
+.pcard-mt{font-size:11px;color:var(--mu);}
+.pcard-sts{display:flex;gap:18px;align-items:center;margin-left:auto;}
+.pst{text-align:right;}
+.pst-v{font-size:15px;font-weight:900;}
+.pst-l{font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase;}
+.ptog{font-size:16px;color:var(--mu);margin-left:12px;transition:transform 0.2s;}
+.ptog.open{transform:rotate(180deg);}
+.pcard-b{display:none;border-top:1px solid var(--g);}
+.pcard-b.open{display:block;}
+
+/* INMUEBLE ROW */
+.irow{padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:background 0.1s;}
+.irow:last-child{border-bottom:none;}
+.irow:hover{background:#f8faff;}
+.icode{font-family:var(--mono);font-size:10px;background:var(--g);padding:2px 7px;border-radius:5px;color:var(--mu);flex-shrink:0;}
+
+/* CAJA BAR */
+.cbar{background:var(--osc);border-radius:12px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.cdot{width:9px;height:9px;border-radius:50%;background:var(--vb);box-shadow:0 0 0 3px rgba(16,185,129,0.2);}
+.cdot.closed{background:#6b7280;box-shadow:none;}
+.ctots{display:flex;gap:28px;}
+.ctot{text-align:center;}
+.ctot-l{font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.ctot-v{font-size:16px;font-weight:900;}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(4px);}
+.mo.open{display:flex;}
+.modal{background:var(--white);border-radius:18px;max-width:580px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.25);}
+.modal.lg{max-width:720px;}
+.mh{padding:18px 22px 14px;border-bottom:1px solid var(--g);}
+.mt{font-size:16px;font-weight:900;margin-bottom:3px;}
+.ms{font-size:12px;color:var(--mu);}
+.mb2{padding:18px 22px;}
+.mf{padding:13px 22px;border-top:1px solid var(--g);display:flex;gap:9px;}
+
+/* BUSQUEDA RAPIDA */
+.busq-wrap{background:var(--osc);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
+.busq-title{font-size:13px;font-weight:800;color:white;margin-bottom:12px;}
+.busq-row{display:flex;gap:10px;}
+.busq-inp{flex:1;padding:12px 16px;font-size:16px;font-family:var(--font);font-weight:700;border:none;border-radius:10px;outline:none;color:var(--osc);}
+.busq-btn{padding:12px 20px;background:var(--vb);color:white;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);}
+.busq-resultado{margin-top:14px;display:none;}
+.busq-card{background:white;border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+
+/* VENTA PIPELINE */
+.pipeline{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;}
+.pipeline-col{flex-shrink:0;width:220px;background:var(--g2);border-radius:12px;padding:12px;}
+.pipeline-col-title{font-size:12px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.pipeline-count{background:var(--osc);color:white;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;}
+.pipeline-item{background:var(--white);border-radius:9px;padding:12px;margin-bottom:8px;border:1.5px solid var(--g);cursor:pointer;transition:all 0.15s;}
+.pipeline-item:hover{border-color:var(--ab);box-shadow:var(--sh);}
+.pi-prop{font-size:12px;font-weight:800;color:var(--osc);margin-bottom:3px;}
+.pi-cliente{font-size:11px;color:var(--mu);}
+.pi-monto{font-size:13px;font-weight:900;color:var(--a);margin-top:5px;}
+
+/* CORREO LOG */
+.correo-item{background:var(--white);border-radius:10px;border:1px solid var(--g);padding:13px 16px;margin-bottom:9px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);}
+.correo-icon{font-size:22px;flex-shrink:0;}
+.correo-asunto{font-size:13px;font-weight:800;color:var(--osc);margin-bottom:2px;}
+.correo-det{font-size:11px;color:var(--mu);}
+.correo-hora{font-size:11px;color:#9ca3af;margin-left:auto;white-space:nowrap;}
+
+/* REDES */
+.red-item{background:var(--white);border-radius:12px;border:1px solid var(--g);padding:14px 18px;margin-bottom:10px;box-shadow:var(--sh);}
+.red-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.red-icon{font-size:24px;}
+.red-nombre{font-size:14px;font-weight:800;}
+.red-meta{font-size:11px;color:var(--mu);}
+.red-props{display:flex;flex-wrap:wrap;gap:6px;}
+.red-prop-tag{background:var(--g2);border:1px solid var(--g);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--osc);}
+
+/* COMPROBANTE */
+.comp{background:var(--white);border:2px solid var(--g);border-radius:12px;padding:26px;max-width:580px;margin:0 auto;}
+.comp-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--osc);}
+.comp-logo{font-size:16px;font-weight:900;}
+.comp-num-v{font-size:18px;font-weight:900;font-family:var(--mono);}
+.comp-sec{margin-bottom:16px;}
+.comp-sec-t{font-size:9px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--g);}
+.crow{display:flex;justify-content:space-between;padding:4px 0;}
+.cc{font-size:12px;color:var(--mu);font-weight:600;}
+.cv{font-size:12px;font-weight:800;}
+.cv.mono{font-family:var(--mono);color:var(--a);}
+.comp-tot{background:var(--osc);border-radius:9px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+
+/* ESTADO PAGO */
+.ep-bar{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:9px;font-size:12px;font-weight:700;margin-bottom:10px;}
+.ep-bar.pend{background:var(--nc);color:var(--n);border:1.5px solid var(--nb);}
+.ep-bar.pago{background:var(--vc);color:var(--v);border:1.5px solid var(--vb);}
+.ep-bar.sc{background:#f3f4f6;color:var(--mu);border:1.5px solid var(--g);}
+
+/* BANCO BOX */
+.banco-box{background:var(--ac);border:1.5px solid #bfdbfe;border-radius:10px;padding:13px 15px;margin-top:13px;}
+.bb-t{font-size:10px;font-weight:800;color:var(--a);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.bb-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #bfdbfe;}
+.bb-row:last-child{border-bottom:none;}
+.bb-c{font-size:11px;color:var(--mu);font-weight:600;}
+.bb-v{font-size:12px;font-weight:800;}
+.bb-cbu{font-family:var(--mono);font-size:12px;color:var(--a);}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--osc);color:white;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;box-shadow:var(--shl);transition:transform 0.3s;z-index:999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+.sep{height:1px;background:var(--g);margin:14px 0;}
+.vacio{text-align:center;padding:36px 20px;color:#9ca3af;}
+.vacio-i{font-size:40px;margin-bottom:10px;}
+.vacio-t{font-size:15px;font-weight:700;}
+.vacio-s{font-size:12px;margin-top:5px;}
+.grid2col{display:grid;grid-template-columns:1fr 360px;gap:14px;}
+
+@media print{
+  .sidebar,.topbar,.no-print{display:none!important;}
+  .main{margin-left:0!important;}
+  body{background:white;}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="slogo">
+    <div class="slogo-main">🏢 SGI Pro</div>
+    <div class="slogo-sub">Sistema de Gestión Inmobiliaria</div>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Principal</div>
+    <button class="ni active" onclick="nav(this,'sc-inicio')"><span class="ni-ic">🏠</span>Inicio</button>
+    <button class="ni" onclick="nav(this,'sc-busqueda')"><span class="ni-ic">🔍</span>Búsqueda rápida</button>
+    <button class="ni" onclick="nav(this,'sc-caja')"><span class="ni-ic">📦</span>Caja diaria<span class="nb2 n" id="nb-caja">0</span></button>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Cartera</div>
+    <button class="ni" onclick="nav(this,'sc-propietarios')"><span class="ni-ic">👤</span>Propietarios</button>
+    <button class="ni" onclick="nav(this,'sc-propiedades')"><span class="ni-ic">🏘️</span>Propiedades</button>
+    <button class="ni" onclick="nav(this,'sc-disponibles')"><span class="ni-ic">🟢</span>Disponibles<span class="nb2 v" id="nb-disp">0</span></button>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Operaciones</div>
+    <button class="ni" onclick="nav(this,'sc-transferencias')"><span class="ni-ic">🏦</span>Transferencias<span class="nb2 a" id="nb-transf">0</span></button>
+    <button class="ni" onclick="nav(this,'sc-comprobantes')"><span class="ni-ic">📋</span>Comprobantes</button>
+    <button class="ni" onclick="nav(this,'sc-estado-pagos')"><span class="ni-ic">📊</span>Estado de pagos</button>
+    <button class="ni" onclick="nav(this,'sc-ventas')"><span class="ni-ic">💼</span>Ventas<span class="nb2 p" id="nb-ventas">0</span></button>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Marketing</div>
+    <button class="ni" onclick="nav(this,'sc-leads')"><span class="ni-ic">📡</span>Leads y canales<span class="nb2 n" id="nb-leads">0</span></button>
+    <button class="ni" onclick="nav(this,'sc-redes')"><span class="ni-ic">📱</span>Redes sociales</button>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Comunicación</div>
+    <button class="ni" onclick="nav(this,'sc-correos')"><span class="ni-ic">✉️</span>Correos enviados<span class="nb2 v" id="nb-correos">0</span></button>
+    <button class="ni" onclick="nav(this,'sc-operadores')"><span class="ni-ic">👥</span>Operadores</button>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Reportes</div>
+    <button class="ni" onclick="nav(this,'sc-reportes')"><span class="ni-ic">📊</span>Reportes</button>
+  </div>
+
+  <div class="snav">
+    <div class="snav-lbl">Agregar</div>
+    <button class="ni" onclick="nav(this,'sc-nueva-prop')"><span class="ni-ic">➕</span>Nueva propiedad</button>
+    <button class="ni" onclick="nav(this,'sc-nuevo-prop')"><span class="ni-ic">👤</span>Nuevo propietario</button>
+  </div>
+
+  <div class="sfooter">
+    <div class="urow">
+      <div class="uav">A</div>
+      <div><div style="font-size:12px;font-weight:700;color:white">Administrador</div><div style="font-size:10px;color:#6b7280">Control total</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+<div class="topbar">
+  <div style="display:flex;align-items:center">
+    <span class="tb-title" id="tb-title">Inicio</span>
+    <span class="tb-date" id="tb-date"></span>
+  </div>
+  <div style="display:flex;gap:8px" class="no-print">
+    <button class="btn gh sm" onclick="window.print()">🖨️</button>
+    <button class="btn gh sm" onclick="exportarCSV()">📥 CSV</button>
+    <button class="btn gh sm" onclick="abrirModalCobro()">+ Cobro</button>
+    <button class="btn gh sm" onclick="abrirModalGasto()">+ Gasto</button>
+  </div>
+</div>
+<div class="content">
+
+<!-- ══ INICIO ══ -->
+<div class="sc active" id="sc-inicio">
+  <div class="phd">
+    <div><div class="phd-t">Bienvenido 👋</div><div class="phd-s">Resumen completo del día</div></div>
+    <div class="phd-r no-print">
+      <button class="btn v" onclick="abrirModalCobro()">💵 Cobro</button>
+      <button class="btn r" onclick="abrirModalGasto()">🔧 Gasto</button>
+      <button class="btn osc" onclick="navTo('sc-busqueda')">🔍 Búsqueda</button>
+    </div>
+  </div>
+  <div class="sg sg5">
+    <div class="stc v"><div class="stc-l">💰 Cobrado hoy</div><div class="stc-v v" id="si-cob">$0</div><div class="stc-s" id="si-cob-n">0 cobros</div></div>
+    <div class="stc r"><div class="stc-l">🔧 Gastos</div><div class="stc-v r" id="si-gas">$0</div><div class="stc-s" id="si-gas-n">imputados</div></div>
+    <div class="stc n"><div class="stc-l">📊 Comisión</div><div class="stc-v n" id="si-com">$0</div><div class="stc-s">admin</div></div>
+    <div class="stc a"><div class="stc-l">🏦 A transferir</div><div class="stc-v a" id="si-transf">$0</div><div class="stc-s" id="si-transf-n">pendientes</div></div>
+    <div class="stc p"><div class="stc-l">🏘️ Propiedades</div><div class="stc-v p" id="si-props">0</div><div class="stc-s" id="si-ocup">activas</div></div>
+  </div>
+  <div class="grid2col">
+    <div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="background:var(--v);border-radius:12px;padding:18px;cursor:pointer" onclick="abrirModalCobro()" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><div style="font-size:26px;margin-bottom:7px">💵</div><div style="font-size:14px;font-weight:800;color:white">Registrar cobro</div><div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px">Alquiler, expensa...</div></div>
+        <div style="background:var(--r);border-radius:12px;padding:18px;cursor:pointer" onclick="abrirModalGasto()" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><div style="font-size:26px;margin-bottom:7px">🔧</div><div style="font-size:14px;font-weight:800;color:white">Registrar gasto</div><div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px">Reparación, impuesto...</div></div>
+        <div style="background:var(--a);border-radius:12px;padding:18px;cursor:pointer" onclick="navTo('sc-busqueda')" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><div style="font-size:26px;margin-bottom:7px">🔍</div><div style="font-size:14px;font-weight:800;color:white">Búsqueda rápida</div><div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px">Por código de propiedad</div></div>
+        <div style="background:var(--p);border-radius:12px;padding:18px;cursor:pointer" onclick="navTo('sc-ventas')" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'"><div style="font-size:26px;margin-bottom:7px">💼</div><div style="font-size:14px;font-weight:800;color:white">Pipeline ventas</div><div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px">Señado, comprado...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div class="card-t">Últimos movimientos</div></div>
+        <div style="padding:8px 18px 14px" id="inicio-movs"><div class="vacio" style="padding:22px 0"><div class="vacio-i" style="font-size:28px">📋</div><div class="vacio-t" style="font-size:13px">Sin movimientos</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-h"><div class="card-t">🟢 Disponibles</div><span class="bdg v" id="disp-n">0</span></div>
+        <div style="padding:6px 0" id="inicio-disp"><div class="vacio" style="padding:16px 0"><div class="vacio-t" style="font-size:12px">Sin disponibles</div></div></div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-h"><div class="card-t">✉️ Últimos correos</div><button class="btn gh sm no-print" onclick="navTo('sc-correos')">Ver todos</button></div>
+        <div style="padding:8px 18px 12px" id="inicio-correos"><div class="vacio" style="padding:16px 0"><div class="vacio-t" style="font-size:12px">Sin correos</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div class="card-t">📡 Últimos leads</div><button class="btn gh sm no-print" onclick="navTo('sc-leads')">Ver todos</button></div>
+        <div style="padding:8px 18px 12px" id="inicio-leads"><div class="vacio" style="padding:16px 0"><div class="vacio-t" style="font-size:12px">Sin leads</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BÚSQUEDA RÁPIDA ══ -->
+<div class="sc" id="sc-busqueda">
+  <div class="phd"><div><div class="phd-t">🔍 Búsqueda rápida</div><div class="phd-s">Ingresá el código o nombre de la propiedad para ver todo al instante</div></div></div>
+  <div class="busq-wrap">
+    <div class="busq-title">Buscá por código (ej: COT-4A), nombre o propietario</div>
+    <div class="busq-row">
+      <input class="busq-inp" id="busq-inp" placeholder="Escribí el código o nombre..." oninput="buscarPropiedad()" onkeyup="buscarPropiedad()">
+      <button class="busq-btn" onclick="buscarPropiedad()">🔍 Buscar</button>
+    </div>
+    <div class="busq-resultado" id="busq-resultado"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">Todas las propiedades</div></div>
+    <div class="ts">
+      <table>
+        <thead><tr><th>Código</th><th>Propiedad</th><th>Propietario</th><th>Estado</th><th>Alquiler</th><th>Cobrado</th><th>Neto</th><th>Acción</th></tr></thead>
+        <tbody id="tbody-busq"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CAJA ══ -->
+<div class="sc" id="sc-caja">
+  <div class="phd">
+    <div><div class="phd-t">📦 Caja diaria</div><div class="phd-s">Todos los movimientos del día en orden cronológico</div></div>
+    <div class="phd-r no-print">
+      <button class="btn gh" onclick="abrirModalCobro()">+ Cobro</button>
+      <button class="btn gh" onclick="abrirModalGasto()">+ Gasto</button>
+      <button class="btn r" id="btn-cerrar-caja" onclick="cerrarCaja()">🔒 Cerrar caja</button>
+    </div>
+  </div>
+  <div class="cbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="cdot" id="caja-dot"></div>
+      <div><div style="font-size:13px;font-weight:800;color:white" id="caja-txt">Caja ABIERTA</div><div style="font-size:11px;color:#9ca3af" id="caja-sub">Registrando movimientos</div></div>
+    </div>
+    <div class="ctots">
+      <div class="ctot"><div class="ctot-l">Ingresos</div><div class="ctot-v" style="color:#4ade80" id="c-ing">$0</div></div>
+      <div class="ctot"><div class="ctot-l">Egresos</div><div class="ctot-v" style="color:#f87171" id="c-eg">$0</div></div>
+      <div class="ctot"><div class="ctot-l">Comisión</div><div class="ctot-v" style="color:#fbbf24" id="c-com">$0</div></div>
+      <div class="ctot"><div class="ctot-l">Neto</div><div class="ctot-v" style="color:#60a5fa" id="c-net">$0</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">Movimientos de hoy</div>
+      <select class="sel" id="filtro-caja" onchange="renderCaja()" style="width:200px;padding:5px 9px;font-size:11px"><option value="">Todas las propiedades</option></select>
+    </div>
+    <div class="ts"><table><thead><tr><th>Hora</th><th>Propiedad</th><th>Propietario</th><th>Tipo</th><th>Concepto</th><th>Ingreso</th><th>Egreso</th><th>Saldo acum.</th></tr></thead><tbody id="tbody-caja"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">📦 Historial de cajas cerradas</div></div>
+    <div id="cajas-hist" style="padding:6px 0"><div class="vacio" style="padding:20px 0"><div class="vacio-t" style="font-size:12px">Sin cajas cerradas</div></div></div>
+  </div>
+</div>
+
+<!-- ══ PROPIETARIOS ══ -->
+<div class="sc" id="sc-propietarios">
+  <div class="phd">
+    <div><div class="phd-t">👤 Propietarios</div><div class="phd-s">Cada propietario con todas sus propiedades agrupadas</div></div>
+    <div class="phd-r no-print">
+      <input class="inp" id="busq-propietarios" placeholder="🔍 Buscar..." oninput="renderPropietarios()" style="width:200px">
+      <button class="btn osc" onclick="navTo('sc-nuevo-prop')">+ Nuevo</button>
+    </div>
+  </div>
+  <div id="lista-propietarios"></div>
+</div>
+
+<!-- ══ PROPIEDADES ══ -->
+<div class="sc" id="sc-propiedades">
+  <div class="phd">
+    <div><div class="phd-t">🏘️ Propiedades</div><div class="phd-s">Listado completo con búsqueda por código</div></div>
+    <div class="phd-r no-print">
+      <input class="inp" id="busq-props" placeholder="🔍 Código, nombre..." oninput="renderPropiedades()" style="width:200px">
+      <select class="sel" id="filtro-est-props" onchange="renderPropiedades()" style="width:140px;padding:9px 12px">
+        <option value="">Todos</option><option>Alquilado</option><option>Disponible</option><option>Señado</option><option>Vendido</option><option>Mantenimiento</option>
+      </select>
+      <button class="btn osc" onclick="navTo('sc-nueva-prop')">+ Nueva</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ts"><table><thead><tr><th>Código</th><th>Propiedad</th><th>Propietario</th><th>Tipo</th><th>Estado</th><th>Alquiler</th><th>Canal</th><th>Acciones</th></tr></thead><tbody id="tbody-props"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ DISPONIBLES ══ -->
+<div class="sc" id="sc-disponibles">
+  <div class="phd"><div><div class="phd-t">🟢 Propiedades disponibles</div><div class="phd-s">Para alquilar y vender — actualizadas en tiempo real</div></div></div>
+  <div class="sg sg3">
+    <div class="stc v"><div class="stc-l">Para alquilar</div><div class="stc-v v" id="disp-alq">0</div></div>
+    <div class="stc p"><div class="stc-l">Para vender</div><div class="stc-v p" id="disp-vta">0</div></div>
+    <div class="stc n"><div class="stc-l">Señadas</div><div class="stc-v n" id="disp-sen">0</div></div>
+  </div>
+  <div class="card">
+    <div class="ts"><table><thead><tr><th>Código</th><th>Propiedad</th><th>Tipo</th><th>Estado</th><th>Precio/mes</th><th>Canal</th><th>Observación</th></tr></thead><tbody id="tbody-disp"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ TRANSFERENCIAS ══ -->
+<div class="sc" id="sc-transferencias">
+  <div class="phd">
+    <div><div class="phd-t">🏦 Transferencias</div><div class="phd-s">Liquidá y transferí a cada propietario con datos bancarios exactos</div></div>
+    <div class="phd-r no-print"><button class="btn osc" onclick="liquidarTodo()">🏦 Liquidar todo</button></div>
+  </div>
+  <div class="sg sg4">
+    <div class="stc v"><div class="stc-l">Cobrado hoy</div><div class="stc-v v" id="t-cob">$0</div></div>
+    <div class="stc r"><div class="stc-l">Gastos</div><div class="stc-v r" id="t-gas">$0</div></div>
+    <div class="stc n"><div class="stc-l">Comisión</div><div class="stc-v n" id="t-com">$0</div></div>
+    <div class="stc a"><div class="stc-l">A transferir</div><div class="stc-v a" id="t-neto">$0</div></div>
+  </div>
+  <div id="lista-transf"></div>
+</div>
+
+<!-- ══ COMPROBANTES ══ -->
+<div class="sc" id="sc-comprobantes">
+  <div class="phd"><div><div class="phd-t">📋 Comprobantes emitidos</div><div class="phd-s">Historial de todas las transferencias confirmadas</div></div></div>
+  <div id="lista-comp"><div class="vacio"><div class="vacio-i">📋</div><div class="vacio-t">Sin comprobantes</div><div class="vacio-s">Confirmá una transferencia para generar el primero</div></div></div>
+</div>
+
+<!-- ══ ESTADO PAGOS ══ -->
+<div class="sc" id="sc-estado-pagos">
+  <div class="phd"><div><div class="phd-t">📊 Estado de pagos</div><div class="phd-s">Qué está pago, pendiente o sin cobrar</div></div></div>
+  <div class="sg sg3">
+    <div class="stc v"><div class="stc-l">✅ Pagado y transferido</div><div class="stc-v v" id="ep-pag">$0</div><div class="stc-s" id="ep-pag-n">0 props</div></div>
+    <div class="stc n"><div class="stc-l">⏳ Cobrado sin transferir</div><div class="stc-v n" id="ep-pend">$0</div><div class="stc-s" id="ep-pend-n">0 props</div></div>
+    <div class="stc r"><div class="stc-l">❌ Sin cobrar</div><div class="stc-v r" id="ep-sc">$0</div><div class="stc-s" id="ep-sc-n">0 props</div></div>
+  </div>
+  <div class="card">
+    <div class="ts"><table><thead><tr><th>Código</th><th>Propiedad</th><th>Propietario</th><th>Alquiler</th><th>Cobrado</th><th>Gastos</th><th>Comisión</th><th>Neto</th><th>Estado</th></tr></thead><tbody id="tbody-ep"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ VENTAS PIPELINE ══ -->
+<div class="sc" id="sc-ventas">
+  <div class="phd">
+    <div><div class="phd-t">💼 Pipeline de ventas</div><div class="phd-s">Seguimiento de cada operación: interesado → señado → comprado → escriturado</div></div>
+    <div class="phd-r no-print"><button class="btn p" onclick="abrirModalVenta()">+ Nueva operación</button></div>
+  </div>
+  <div class="pipeline" id="pipeline-ventas"></div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">Historial de operaciones</div></div>
+    <div class="ts"><table><thead><tr><th>Propiedad</th><th>Cliente</th><th>Tipo</th><th>Precio</th><th>Estado</th><th>Canal</th><th>Fecha</th></tr></thead><tbody id="tbody-ventas"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ LEADS ══ -->
+<div class="sc" id="sc-leads">
+  <div class="phd">
+    <div><div class="phd-t">📡 Leads y canales</div><div class="phd-s">Interesados y rendimiento por canal</div></div>
+    <div class="phd-r no-print"><button class="btn osc" onclick="abrirModalLead()">+ Nuevo lead</button></div>
+  </div>
+  <div class="sg sg4">
+    <div class="stc a"><div class="stc-l">Total leads</div><div class="stc-v a" id="l-tot">0</div></div>
+    <div class="stc v"><div class="stc-l">Cerrados</div><div class="stc-v v" id="l-cer">0</div></div>
+    <div class="stc n"><div class="stc-l">En negociación</div><div class="stc-v n" id="l-neg">0</div></div>
+    <div class="stc p"><div class="stc-l">Canal top</div><div class="stc-v" style="font-size:14px;font-weight:800" id="l-ctop">—</div></div>
+  </div>
+  <div class="grid2col" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-h"><div class="card-t">Leads registrados</div>
+        <div style="display:flex;gap:6px">
+          <select class="sel" id="fl-canal" onchange="renderLeads()" style="width:130px;padding:5px 8px;font-size:11px"><option value="">Todos</option><option>Facebook</option><option>Instagram</option><option>YouTube</option><option>Web propia</option><option>ZonaProp</option><option>Referido</option><option>Publicidad gráfica</option><option>Contacto directo</option><option>Zonal</option></select>
+          <select class="sel" id="fl-est" onchange="renderLeads()" style="width:130px;padding:5px 8px;font-size:11px"><option value="">Todos</option><option>Interesado</option><option>En negociación</option><option>Señado</option><option>Cerrado</option><option>Perdido</option></select>
+        </div>
+      </div>
+      <div style="padding:10px 18px" id="lista-leads"><div class="vacio" style="padding:24px 0"><div class="vacio-i" style="font-size:28px">📡</div><div class="vacio-t" style="font-size:13px">Sin leads</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-t">Performance por canal</div></div>
+      <div style="padding:12px 18px" id="canales-bars"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REDES SOCIALES ══ -->
+<div class="sc" id="sc-redes">
+  <div class="phd">
+    <div><div class="phd-t">📱 Redes sociales</div><div class="phd-s">Control de publicaciones y canales por propiedad</div></div>
+    <div class="phd-r no-print"><button class="btn osc" onclick="abrirModalPublicacion()">+ Registrar publicación</button></div>
+  </div>
+  <div class="sg sg4" id="redes-stats"></div>
+  <div id="lista-redes"><div class="vacio"><div class="vacio-i">📱</div><div class="vacio-t">Sin publicaciones registradas</div><div class="vacio-s">Registrá dónde publicaste cada propiedad</div></div></div>
+</div>
+
+<!-- ══ CORREOS ══ -->
+<div class="sc" id="sc-correos">
+  <div class="phd">
+    <div><div class="phd-t">✉️ Correos enviados</div><div class="phd-s">Notificaciones automáticas enviadas a los propietarios</div></div>
+    <div class="phd-r no-print"><button class="btn osc" onclick="abrirModalCorreo()">+ Enviar correo</button></div>
+  </div>
+  <div id="lista-correos"><div class="vacio"><div class="vacio-i">✉️</div><div class="vacio-t">Sin correos enviados</div><div class="vacio-s">Los correos se envían automáticamente al registrar movimientos</div></div></div>
+</div>
+
+<!-- ══ OPERADORES ══ -->
+<div class="sc" id="sc-operadores">
+  <div class="phd"><div><div class="phd-t">👥 Operadores</div><div class="phd-s">Equipo de trabajo y sus actividades</div></div><div class="phd-r no-print"><button class="btn osc" onclick="abrirModalOperador()">+ Nuevo operador</button></div></div>
+  <div id="lista-operadores"></div>
+</div>
+
+<!-- ══ REPORTES ══ -->
+<div class="sc" id="sc-reportes">
+  <div class="phd"><div><div class="phd-t">📊 Reportes</div><div class="phd-s">Exportá y analizá toda la información</div></div></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+    <div class="card" style="padding:18px;cursor:pointer" onclick="reporteMes()"><div style="font-size:32px;margin-bottom:10px">📅</div><div style="font-size:13px;font-weight:800;margin-bottom:6px">Por mes</div><select class="sel" id="rep-mes" style="font-size:11px;padding:6px 9px" onclick="event.stopPropagation()"><option>Abril 2026</option><option>Marzo 2026</option><option>Febrero 2026</option></select></div>
+    <div class="card" style="padding:18px;cursor:pointer" onclick="reportePropietario()"><div style="font-size:32px;margin-bottom:10px">👤</div><div style="font-size:13px;font-weight:800;margin-bottom:6px">Por propietario</div><select class="sel" id="rep-prop" style="font-size:11px;padding:6px 9px" onclick="event.stopPropagation()"><option value="">— Elegí —</option></select></div>
+    <div class="card" style="padding:18px;cursor:pointer" onclick="navTo('sc-leads')"><div style="font-size:32px;margin-bottom:10px">📡</div><div style="font-size:13px;font-weight:800;margin-bottom:6px">Canales</div><div style="font-size:11px;color:var(--mu)">Performance por canal</div></div>
+    <div class="card" style="padding:18px;cursor:pointer" onclick="navTo('sc-ventas')"><div style="font-size:32px;margin-bottom:10px">💼</div><div style="font-size:13px;font-weight:800;margin-bottom:6px">Ventas</div><div style="font-size:11px;color:var(--mu)">Pipeline completo</div></div>
+  </div>
+  <div id="rep-resultado"></div>
+  <div style="display:flex;gap:10px;margin-top:14px" class="no-print">
+    <button class="btn gh" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn a" onclick="exportarCSV()">📥 Exportar CSV</button>
+  </div>
+</div>
+
+<!-- ══ NUEVA PROPIEDAD ══ -->
+<div class="sc" id="sc-nueva-prop">
+  <div class="phd"><div><div class="phd-t">➕ Nueva propiedad</div></div></div>
+  <div class="fsec"><div class="fsec-t">🏠 Datos de la propiedad</div>
+    <div class="g2f">
+      <div class="fg"><label>Nombre / Identificación</label><input class="inp" id="np-nombre" placeholder="Ej: Edificio Costanera — Depto 4A"></div>
+      <div class="fg"><label>Dirección completa</label><input class="inp" id="np-dir" placeholder="Av. Costanera 1234, Corrientes"></div>
+      <div class="fg"><label>Tipo</label><select class="sel" id="np-tipo"><option>Departamento</option><option>Casa</option><option>Local comercial</option><option>Edificio completo</option><option>Terreno</option><option>Otro</option></select></div>
+      <div class="fg"><label>Estado</label><select class="sel" id="np-estado"><option>Alquilado</option><option>Disponible</option><option>Señado</option><option>Vendido</option><option>Mantenimiento</option></select></div>
+      <div class="fg"><label>Alquiler mensual ($)</label><input class="inp" id="np-alquiler" type="number" placeholder="0"></div>
+      <div class="fg"><label>Comisión admin (%)</label><input class="inp" id="np-com" type="number" value="10"></div>
+      <div class="fg"><label>Canal de origen</label><select class="sel" id="np-canal"><option value="">Sin canal</option><option>Facebook</option><option>Instagram</option><option>YouTube</option><option>Web propia</option><option>ZonaProp</option><option>Referido</option><option>Publicidad gráfica</option></select></div>
+      <div class="fg"><label>Propietario</label><select class="sel" id="np-prop-sel"><option value="">— Elegí propietario —</option></select></div>
+      <div class="fg sp2"><label>Observaciones</label><textarea class="ta" id="np-obs" placeholder="Notas..."></textarea></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px"><button class="btn gh lg" onclick="navTo('sc-inicio')">Cancelar</button><button class="btn v lg" onclick="guardarPropiedad()" style="flex:1">✅ Guardar propiedad</button></div>
+</div>
+
+<!-- ══ NUEVO PROPIETARIO ══ -->
+<div class="sc" id="sc-nuevo-prop">
+  <div class="phd"><div><div class="phd-t">👤 Nuevo propietario</div></div></div>
+  <div class="fsec"><div class="fsec-t">👤 Datos personales</div>
+    <div class="g2f">
+      <div class="fg"><label>Nombre completo</label><input class="inp" id="npp-nombre" placeholder="Pedro García"></div>
+      <div class="fg"><label>Teléfono</label><input class="inp" id="npp-tel" placeholder="+54 9 362..."></div>
+      <div class="fg"><label>Email (para notificaciones)</label><input class="inp" id="npp-email" placeholder="email@ejemplo.com"></div>
+      <div class="fg"><label>CUIT</label><input class="inp" id="npp-cuit" placeholder="20-12345678-9"></div>
+    </div>
+  </div>
+  <div class="fsec"><div class="fsec-t">🏦 Datos bancarios</div>
+    <div class="g2f">
+      <div class="fg"><label>Titular de la cuenta</label><input class="inp" id="npp-titular" placeholder="Nombre del titular"></div>
+      <div class="fg"><label>Banco</label><select class="sel" id="npp-banco"><option>Banco Nación</option><option>Banco Santander</option><option>Banco Galicia</option><option>Banco BBVA</option><option>Banco Macro</option><option>Mercado Pago</option><option>Brubank</option><option>Otro</option></select></div>
+      <div class="fg sp2"><label>CBU (22 dígitos)</label><input class="inp mono" id="npp-cbu" placeholder="0000000000000000000000" maxlength="22"></div>
+      <div class="fg"><label>Alias</label><input class="inp" id="npp-alias" placeholder="ALIAS.BANCO"></div>
+      <div class="fg"><label>CUIT del titular</label><input class="inp" id="npp-banco-cuit" placeholder="20-12345678-9"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px"><button class="btn gh lg" onclick="navTo('sc-inicio')">Cancelar</button><button class="btn v lg" onclick="guardarPropietario()" style="flex:1">✅ Guardar propietario</button></div>
+</div>
+
+</div></div></div>
+
+<!-- ════════════ MODALES ════════════ -->
+
+<!-- COBRO -->
+<div class="mo" id="mo-cobro">
+<div class="modal">
+  <div class="mh"><div class="mt">💵 Registrar cobro</div><div class="ms">El pago entra a caja y se notifica al propietario por correo</div></div>
+  <div class="mb2">
+    <div class="fg"><label>Propiedad</label><select class="sel" id="mc-prop"><option value="">— Elegí —</option></select></div>
+    <div class="fg"><label>Inquilino / Pagador</label><input class="inp" id="mc-inq" placeholder="Nombre completo"></div>
+    <div class="fg"><label>Tipo</label><select class="sel" id="mc-tipo"><option>Alquiler</option><option>Expensas</option><option>Anticipo</option><option>Depósito</option><option>Seña</option><option>Otro</option></select></div>
+    <div class="fg"><label>Mes</label><select class="sel" id="mc-mes"><option>Abril 2026</option><option>Mayo 2026</option><option>Marzo 2026</option></select></div>
+    <div class="fg"><label>Monto ($)</label><div style="position:relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:800;color:var(--mu)">$</span><input class="inp" id="mc-monto" type="number" placeholder="0" style="padding-left:28px"></div></div>
+    <div class="fg"><label>Observación</label><input class="inp" id="mc-obs" placeholder="Ej: Pago en efectivo..."></div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn v" onclick="guardarCobro()" style="flex:1">✅ Guardar cobro</button></div>
+</div>
+</div>
+
+<!-- GASTO -->
+<div class="mo" id="mo-gasto">
+<div class="modal">
+  <div class="mh"><div class="mt">🔧 Registrar gasto</div><div class="ms">Se descuenta del neto a transferir y se notifica al propietario</div></div>
+  <div class="mb2">
+    <div class="fg"><label>Propiedad</label><select class="sel" id="mg-prop"><option value="">— Elegí —</option></select></div>
+    <div class="fg"><label>Tipo de gasto</label><select class="sel" id="mg-tipo"><option>Reparación</option><option>Impuesto</option><option>Servicio</option><option>Mano de obra</option><option>Bancario</option><option>Otro</option></select></div>
+    <div class="fg"><label>Descripción</label><input class="inp" id="mg-desc" placeholder="Ej: Rotura caño piso 2..."></div>
+    <div class="fg"><label>Monto ($)</label><div style="position:relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:800;color:var(--mu)">$</span><input class="inp" id="mg-monto" type="number" placeholder="0" style="padding-left:28px"></div></div>
+    <div class="fg"><label>N° comprobante</label><input class="inp" id="mg-comp" placeholder="Factura N°..."></div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn r" onclick="guardarGasto()" style="flex:1">✅ Guardar gasto</button></div>
+</div>
+</div>
+
+<!-- LEAD -->
+<div class="mo" id="mo-lead">
+<div class="modal">
+  <div class="mh"><div class="mt">📡 Nuevo lead</div><div class="ms">Registrá el interesado y de dónde vino</div></div>
+  <div class="mb2">
+    <div class="g2f">
+      <div class="fg"><label>Nombre</label><input class="inp" id="ml-nombre" placeholder="Nombre completo"></div>
+      <div class="fg"><label>Teléfono</label><input class="inp" id="ml-tel" placeholder="+54 9..."></div>
+      <div class="fg"><label>Canal de origen</label><select class="sel" id="ml-canal"><option>Facebook</option><option>Instagram</option><option>YouTube</option><option>Web propia</option><option>ZonaProp</option><option>Referido / boca a boca</option><option>Publicidad gráfica</option><option>Contacto directo</option><option>Zonal</option></select></div>
+      <div class="fg"><label>¿Qué busca?</label><select class="sel" id="ml-busca"><option>Alquiler</option><option>Compra / Venta</option></select></div>
+      <div class="fg"><label>Propiedad de interés</label><select class="sel" id="ml-prop"><option value="">Sin asignar</option></select></div>
+      <div class="fg"><label>Estado</label><select class="sel" id="ml-estado"><option>Interesado</option><option>En negociación</option><option>Señado</option><option>Cerrado</option><option>Perdido</option></select></div>
+      <div class="fg"><label>Operador que captó</label><input class="inp" id="ml-op" placeholder="Nombre del operador"></div>
+      <div class="fg"><label>Origen geográfico</label><input class="inp" id="ml-origen" placeholder="Ej: Formosa, Misiones..."></div>
+      <div class="fg sp2"><label>Notas</label><textarea class="ta" id="ml-notas" placeholder="Detalles..."></textarea></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn a" onclick="guardarLead()" style="flex:1">✅ Guardar lead</button></div>
+</div>
+</div>
+
+<!-- VENTA -->
+<div class="mo" id="mo-venta">
+<div class="modal">
+  <div class="mh"><div class="mt">💼 Nueva operación de venta/alquiler</div></div>
+  <div class="mb2">
+    <div class="g2f">
+      <div class="fg"><label>Propiedad</label><select class="sel" id="mv-prop"><option value="">— Elegí —</option></select></div>
+      <div class="fg"><label>Cliente</label><input class="inp" id="mv-cliente" placeholder="Nombre del cliente"></div>
+      <div class="fg"><label>Tipo de operación</label><select class="sel" id="mv-tipo"><option>Alquiler</option><option>Venta</option></select></div>
+      <div class="fg"><label>Estado</label><select class="sel" id="mv-estado"><option>Interesado</option><option>En negociación</option><option>Señado</option><option>Comprado</option><option>Escriturado</option></select></div>
+      <div class="fg"><label>Precio ($)</label><input class="inp" id="mv-precio" type="number" placeholder="0"></div>
+      <div class="fg"><label>Canal</label><select class="sel" id="mv-canal"><option>Facebook</option><option>Instagram</option><option>Web propia</option><option>ZonaProp</option><option>Referido</option><option>Contacto directo</option></select></div>
+      <div class="fg"><label>Teléfono cliente</label><input class="inp" id="mv-tel" placeholder="+54 9..."></div>
+      <div class="fg"><label>Email cliente</label><input class="inp" id="mv-email" placeholder="email@..."></div>
+      <div class="fg sp2"><label>Notas</label><textarea class="ta" id="mv-notas" placeholder="Detalles de la operación..."></textarea></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn p" onclick="guardarVenta()" style="flex:1">✅ Guardar operación</button></div>
+</div>
+</div>
+
+<!-- PUBLICACION REDES -->
+<div class="mo" id="mo-pub">
+<div class="modal">
+  <div class="mh"><div class="mt">📱 Registrar publicación en redes</div></div>
+  <div class="mb2">
+    <div class="fg"><label>Propiedad publicada</label><select class="sel" id="mp-prop"><option value="">— Elegí —</option></select></div>
+    <div class="fg"><label>Red social</label><select class="sel" id="mp-red"><option>Facebook</option><option>Instagram</option><option>YouTube</option><option>TikTok</option><option>Web propia</option><option>ZonaProp</option><option>Publicidad gráfica</option></select></div>
+    <div class="fg"><label>Tipo de publicación</label><select class="sel" id="mp-tipo"><option>Post foto</option><option>Story</option><option>Reel / Video</option><option>Anuncio pagado</option><option>Listado web</option></select></div>
+    <div class="fg"><label>Link (opcional)</label><input class="inp" id="mp-link" placeholder="https://..."></div>
+    <div class="fg"><label>Notas</label><textarea class="ta" id="mp-notas" placeholder="Descripción de la publicación..."></textarea></div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn osc" onclick="guardarPublicacion()" style="flex:1">✅ Registrar</button></div>
+</div>
+</div>
+
+<!-- CORREO MANUAL -->
+<div class="mo" id="mo-correo">
+<div class="modal">
+  <div class="mh"><div class="mt">✉️ Enviar correo al propietario</div></div>
+  <div class="mb2">
+    <div class="fg"><label>Propietario / Propiedad</label><select class="sel" id="mcor-prop"><option value="">— Elegí —</option></select></div>
+    <div class="fg"><label>Asunto</label><input class="inp" id="mcor-asunto" placeholder="Ej: Liquidación abril 2026"></div>
+    <div class="fg"><label>Mensaje</label><textarea class="ta" id="mcor-msg" style="min-height:100px" placeholder="Escribí el mensaje..."></textarea></div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn v" onclick="enviarCorreo()" style="flex:1">✉️ Enviar correo</button></div>
+</div>
+</div>
+
+<!-- COMPROBANTE -->
+<div class="mo" id="mo-comp">
+<div class="modal lg">
+  <div class="mh"><div class="mt">📋 Comprobante de transferencia</div></div>
+  <div class="mb2" id="comp-body"></div>
+  <div class="mf no-print">
+    <button class="btn gh" onclick="cerrarModales()">Cerrar</button>
+    <button class="btn osc" onclick="imprimirComp()" style="flex:1">🖨️ Imprimir / PDF</button>
+  </div>
+</div>
+</div>
+
+<!-- OPERADOR -->
+<div class="mo" id="mo-operador">
+<div class="modal">
+  <div class="mh"><div class="mt">👥 Nuevo operador</div></div>
+  <div class="mb2">
+    <div class="fg"><label>Nombre</label><input class="inp" id="mop-nombre" placeholder="Nombre completo"></div>
+    <div class="fg"><label>Zona</label><input class="inp" id="mop-zona" placeholder="Ej: Corrientes, Formosa, Chaco..."></div>
+    <div class="fg"><label>Teléfono</label><input class="inp" id="mop-tel" placeholder="+54 9..."></div>
+    <div class="fg"><label>Email</label><input class="inp" id="mop-email" placeholder="email@..."></div>
+  </div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cancelar</button><button class="btn osc" onclick="guardarOperador()" style="flex:1">✅ Guardar</button></div>
+</div>
+</div>
+
+<!-- LIQUIDAR TODO -->
+<div class="mo" id="mo-todo">
+<div class="modal lg">
+  <div class="mh"><div class="mt">🏦 Liquidar todo</div><div class="ms">Todas las transferencias pendientes del día</div></div>
+  <div class="mb2" id="todo-body"></div>
+  <div class="mf"><button class="btn gh" onclick="cerrarModales()">Cerrar</button><button class="btn a" onclick="exportarLiquidaciones()" style="flex:1">📥 Exportar CSV</button></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════
+let DB = {
+  propietarios: [
+    { id:1, nombre:'Juan Pérez', tel:'+54 9 362 4111111', email:'juan@email.com', cuit:'20-11111111-1', banco:{titular:'Juan Pérez',banco:'Banco Nación',cbu:'0110023900023456789012',alias:'JUAN.NACION',cuit:'20-11111111-1'} },
+    { id:2, nombre:'María García', tel:'+54 9 362 4222222', email:'maria@email.com', cuit:'27-22222222-2', banco:{titular:'María García',banco:'Banco Galicia',cbu:'0070223400002345678901',alias:'MARIA.GAL',cuit:'27-22222222-2'} },
+    { id:3, nombre:'Carlos López', tel:'+54 9 362 4333333', email:'carlos@email.com', cuit:'20-33333333-3', banco:{titular:'Carlos López',banco:'Banco Macro',cbu:'2850590940090418135201',alias:'CARLOS.MAC',cuit:'20-33333333-3'} },
+    { id:4, nombre:'Ana Villalba', tel:'+54 9 362 4444444', email:'ana@email.com', cuit:'27-44444444-4', banco:{titular:'Ana Villalba',banco:'Mercado Pago',cbu:'0000003100099484562154',alias:'ANA.MP',cuit:'27-44444444-4'} },
+  ],
+  propiedades: [
+    { id:1, codigo:'COT-4A', nombre:'Edificio Costanera — Depto. 4A', dir:'Av. Costanera 1234, Corrientes', tipo:'Departamento', estado:'Alquilado', alquiler:750000, comPct:10, canal:'Instagram', propId:1, obs:'', cobros:[], gastos:[], transfs:[] },
+    { id:2, codigo:'COT-7B', nombre:'Edificio Costanera — Depto. 7B', dir:'Av. Costanera 1234, Corrientes', tipo:'Departamento', estado:'Disponible', alquiler:800000, comPct:10, canal:'Facebook', propId:1, obs:'Disponible desde mayo', cobros:[], gastos:[], transfs:[] },
+    { id:3, codigo:'RES-12', nombre:'Casa Resistencia 12', dir:'Calle 12 N° 890, Resistencia', tipo:'Casa', estado:'Alquilado', alquiler:320000, comPct:8, canal:'ZonaProp', propId:2, obs:'', cobros:[], gastos:[], transfs:[] },
+    { id:4, codigo:'LOC-25M', nombre:'Local Av. 25 de Mayo', dir:'Av. 25 de Mayo 456, Corrientes', tipo:'Local comercial', estado:'Alquilado', alquiler:480000, comPct:10, canal:'Web propia', propId:3, obs:'', cobros:[], gastos:[], transfs:[] },
+    { id:5, codigo:'TOR-12B', nombre:'Torre Norte — Depto. 12B', dir:'Bv. Galvez 789, Corrientes', tipo:'Departamento', estado:'Señado', alquiler:350000, comPct:10, canal:'Referido', propId:4, obs:'Señado por Rodríguez', cobros:[], gastos:[], transfs:[] },
+    { id:6, codigo:'GAL-890', nombre:'Casa Bv. Galvez 890', dir:'Bv. Galvez 890, Corrientes', tipo:'Casa', estado:'Mantenimiento', alquiler:290000, comPct:8, canal:'Facebook', propId:2, obs:'Refacción baño', cobros:[], gastos:[], transfs:[] },
+    { id:7, codigo:'LAP-340', nombre:'Depto. Laprida 340 — N°2', dir:'Av. Laprida 340, Corrientes', tipo:'Departamento', estado:'Disponible', alquiler:420000, comPct:10, canal:'Instagram', propId:1, obs:'', cobros:[], gastos:[], transfs:[] },
+  ],
+  movimientos: [],
+  leads: [],
+  ventas: [],
+  publicaciones: [],
+  correos: [],
+  operadores: [
+    { id:1, nombre:'María González', zona:'Corrientes', tel:'+54 9 362 1234567', email:'mgonzalez@sgi.com' },
+    { id:2, nombre:'Roberto Sánchez', zona:'Formosa', tel:'+54 9 370 9876543', email:'rsanchez@sgi.com' },
+  ],
+  cajasHist: [],
+  compIdC: 1001, propIdC: 8, propietIdC: 5,
+};
+
+// ══ INIT ══
+window.onload = () => {
+  const h = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('tb-date').textContent = dias[h.getDay()] + ' ' + h.getDate() + ' de ' + meses[h.getMonth()] + ' ' + h.getFullYear();
+  poblarTodo(); actualizarStats(); renderInicio();
+};
+
+// ══ NAV ══
+function navTo(id) {
+  const btn = document.querySelector(`.ni[onclick="nav(this,'${id}')"]`);
+  nav(btn, id);
+}
+
+function nav(btn, id) {
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(btn?.classList) btn.classList.add('active');
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tits = {'sc-inicio':'Inicio','sc-busqueda':'Búsqueda rápida','sc-caja':'Caja diaria','sc-propietarios':'Propietarios','sc-propiedades':'Propiedades','sc-disponibles':'Disponibles','sc-transferencias':'Transferencias','sc-comprobantes':'Comprobantes','sc-estado-pagos':'Estado de pagos','sc-ventas':'Ventas','sc-leads':'Leads y canales','sc-redes':'Redes sociales','sc-correos':'Correos','sc-operadores':'Operadores','sc-reportes':'Reportes','sc-nueva-prop':'Nueva propiedad','sc-nuevo-prop':'Nuevo propietario'};
+  document.getElementById('tb-title').textContent = tits[id]||'';
+  window.scrollTo(0,0);
+  if(id==='sc-caja') renderCaja();
+  if(id==='sc-propietarios') renderPropietarios();
+  if(id==='sc-propiedades') renderPropiedades();
+  if(id==='sc-disponibles') renderDisponibles();
+  if(id==='sc-transferencias') renderTransferencias();
+  if(id==='sc-comprobantes') renderComprobantes();
+  if(id==='sc-estado-pagos') renderEstadoPagos();
+  if(id==='sc-ventas') renderVentas();
+  if(id==='sc-leads') renderLeads();
+  if(id==='sc-redes') renderRedes();
+  if(id==='sc-correos') renderCorreos();
+  if(id==='sc-operadores') renderOperadores();
+  if(id==='sc-busqueda') renderBusqTabla();
+}
+
+// ══ POBLAR SELECTS ══
+function poblarTodo() {
+  const propOpts = DB.propiedades.map(p=>`<option value="${p.id}">[${p.codigo}] ${p.nombre}</option>`).join('');
+  const propOptsFull = '<option value="">— Elegí —</option>' + propOpts;
+  ['mc-prop','mg-prop','ml-prop','mv-prop','mp-prop','mcor-prop','filtro-caja'].forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    if(id==='mcor-prop') { el.innerHTML='<option value="">— Elegí —</option>'+DB.propietarios.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join(''); return; }
+    el.innerHTML = propOptsFull;
+  });
+  const npps = document.getElementById('np-prop-sel');
+  if(npps) npps.innerHTML='<option value="">— Elegí —</option>'+DB.propietarios.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join('');
+  const rpp = document.getElementById('rep-prop');
+  if(rpp) rpp.innerHTML='<option value="">— Elegí —</option>'+DB.propietarios.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join('');
+  // badges
+  document.getElementById('nb-caja').textContent = DB.movimientos.filter(m=>m.fecha===fechaHoy()).length;
+  document.getElementById('nb-disp').textContent = DB.propiedades.filter(p=>p.estado==='Disponible').length;
+  document.getElementById('nb-transf').textContent = DB.propiedades.filter(p=>calcNeto(p)>0&&!transHoy(p)).length;
+  document.getElementById('nb-leads').textContent = DB.leads.length;
+  document.getElementById('nb-ventas').textContent = DB.ventas.filter(v=>v.estado!=='Escriturado').length;
+  document.getElementById('nb-correos').textContent = DB.correos.length;
+}
+
+// ══ STATS ══
+function actualizarStats() {
+  const movH = DB.movimientos.filter(m=>m.fecha===fechaHoy());
+  const ing = movH.filter(m=>m.tipo==='ingreso').reduce((a,m)=>a+m.monto,0);
+  const eg = movH.filter(m=>m.tipo==='egreso').reduce((a,m)=>a+m.monto,0);
+  const com = DB.propiedades.reduce((a,p)=>{ const c=p.cobros.reduce((b,x)=>b+x.monto,0); return a+(c>0?Math.round(c*p.comPct/100):0); },0);
+  const transf = DB.propiedades.filter(p=>calcNeto(p)>0&&!transHoy(p)).reduce((a,p)=>a+calcNeto(p),0);
+  S('si-cob',fp(ing)); S('si-cob-n',movH.filter(m=>m.tipo==='ingreso').length+' cobros');
+  S('si-gas',fp(eg)); S('si-gas-n',movH.filter(m=>m.tipo==='egreso').length+' gastos');
+  S('si-com',fp(com)); S('si-transf',fp(transf)); S('si-transf-n',DB.propiedades.filter(p=>calcNeto(p)>0&&!transHoy(p)).length+' props');
+  S('si-props',DB.propiedades.length); S('si-ocup',DB.propiedades.filter(p=>p.estado==='Alquilado').length+' alquiladas');
+  S('t-cob',fp(ing)); S('t-gas',fp(eg)); S('t-com',fp(com)); S('t-neto',fp(transf));
+  S('c-ing',fp(ing)); S('c-eg',fp(eg)); S('c-com',fp(com)); S('c-net',fp(ing-eg-com));
+  poblarTodo();
+}
+
+function calcNeto(p) { const c=p.cobros.reduce((a,x)=>a+x.monto,0); const g=p.gastos.reduce((a,x)=>a+x.monto,0); const com=c>0?Math.round(c*p.comPct/100):0; return Math.max(0,c-g-com); }
+function transHoy(p) { return p.transfs.some(t=>t.fecha===fechaHoy()); }
+
+// ══ INICIO ══
+function renderInicio() {
+  const movs = [...DB.movimientos].reverse().slice(0,5);
+  document.getElementById('inicio-movs').innerHTML = movs.length ? movs.map(m=>mrow(m)).join('') : '<div class="vacio" style="padding:18px 0"><div class="vacio-i" style="font-size:26px">📋</div><div class="vacio-t" style="font-size:12px">Sin movimientos</div></div>';
+  const disp = DB.propiedades.filter(p=>p.estado==='Disponible');
+  document.getElementById('disp-n').textContent = disp.length;
+  document.getElementById('inicio-disp').innerHTML = disp.length ? disp.map(p=>`<div class="irow" onclick="navTo('sc-disponibles')"><span class="icode">${p.codigo}</span><div style="flex:1"><div style="font-size:12px;font-weight:700">${p.nombre}</div><div style="font-size:10px;color:var(--mu)">${fp(p.alquiler)}/mes</div></div><span class="bdg v">Disponible</span></div>`).join('') : '<div class="vacio" style="padding:12px 0"><div class="vacio-t" style="font-size:11px">Sin disponibles</div></div>';
+  const correos = [...DB.correos].reverse().slice(0,3);
+  document.getElementById('inicio-correos').innerHTML = correos.length ? correos.map(c=>`<div style="padding:7px 0;border-bottom:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">${c.asunto}</div><div style="font-size:11px;color:var(--mu)">${c.para} · ${c.hora}</div></div>`).join('') : '<div class="vacio" style="padding:12px 0"><div class="vacio-t" style="font-size:11px">Sin correos</div></div>';
+  const leads = [...DB.leads].reverse().slice(0,3);
+  document.getElementById('inicio-leads').innerHTML = leads.length ? leads.map(l=>`<div style="padding:7px 0;border-bottom:1px solid #f3f4f6"><div style="font-size:12px;font-weight:700">${l.nombre}</div><div style="font-size:11px;color:var(--mu)">${l.canal} · ${l.estado}</div></div>`).join('') : '<div class="vacio" style="padding:12px 0"><div class="vacio-t" style="font-size:11px">Sin leads</div></div>';
+}
+
+function mrow(m) {
+  const col = m.tipo==='ingreso'?'var(--v)':m.tipo==='egreso'?'var(--r)':'var(--a)';
+  const sig = m.tipo==='ingreso'?'+':'−';
+  return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6"><div style="flex:1"><div style="font-size:12px;font-weight:700">${m.propiedad}</div><div style="font-size:11px;color:var(--mu)">${m.concepto}</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:900;color:${col}">${sig} ${fp(m.monto)}</div><div style="font-size:10px;color:#9ca3af">${m.hora}</div></div></div>`;
+}
+
+// ══ BÚSQUEDA RÁPIDA ══
+function buscarPropiedad() {
+  const q = document.getElementById('busq-inp').value.toLowerCase().trim();
+  const res = document.getElementById('busq-resultado');
+  if(!q) { res.style.display='none'; renderBusqTabla(); return; }
+  const found = DB.propiedades.filter(p=>p.codigo.toLowerCase().includes(q)||p.nombre.toLowerCase().includes(q)||prop(p.propId)?.nombre.toLowerCase().includes(q)||p.dir.toLowerCase().includes(q));
+  if(!found.length) { res.style.display='block'; res.innerHTML='<div class="busq-card"><div style="color:var(--mu);font-weight:700">Sin resultados para "'+q+'"</div></div>'; return; }
+  res.style.display='block';
+  res.innerHTML = found.map(p=>{
+    const cob=p.cobros.reduce((a,c)=>a+c.monto,0); const gas=p.gastos.reduce((a,g)=>a+g.monto,0); const com=cob>0?Math.round(cob*p.comPct/100):0; const neto=Math.max(0,cob-gas-com);
+    const bc=estadoBdg(p.estado);
+    return `<div class="busq-card" style="margin-bottom:8px;border:2px solid var(--ab)">
+      <div><div style="font-size:15px;font-weight:900;margin-bottom:4px">[${p.codigo}] ${p.nombre}</div><div style="font-size:12px;color:var(--mu)">📍 ${p.dir} · ${prop(p.propId)?.nombre} · ${p.tipo}</div><div style="margin-top:8px;display:flex;gap:8px"><span class="bdg ${bc}">${p.estado}</span>${p.canal?`<span class="bdg a">📡 ${p.canal}</span>`:''}</div></div>
+      <div style="text-align:right;flex-shrink:0"><div style="font-size:10px;color:var(--mu);font-weight:700;text-transform:uppercase;margin-bottom:4px">Neto a transferir</div><div style="font-size:22px;font-weight:900;color:var(--a)">${fp(neto)}</div><div style="font-size:11px;color:var(--mu)">Cobrado: ${fp(cob)} · Alq: ${fp(p.alquiler)}/mes</div></div>
+    </div>`;
+  }).join('');
+  renderBusqTabla(found);
+}
+
+function renderBusqTabla(lista) {
+  const props = lista || DB.propiedades;
+  document.getElementById('tbody-busq').innerHTML = props.map((p,i)=>{
+    const cob=p.cobros.reduce((a,c)=>a+c.monto,0); const gas=p.gastos.reduce((a,g)=>a+g.monto,0); const com=cob>0?Math.round(cob*p.comPct/100):0; const neto=Math.max(0,cob-gas-com);
+    const bc=estadoBdg(p.estado);
+    return `<tr><td><span style="font-family:var(--mono);font-size:10px;background:var(--g);padding:2px 7px;border-radius:5px">${p.codigo}</span></td><td><div style="font-size:12px;font-weight:700">${p.nombre}</div><div style="font-size:10px;color:var(--mu)">${p.dir}</div></td><td style="font-size:12px;font-weight:600">${prop(p.propId)?.nombre||'—'}</td><td><span class="bdg ${bc}">${p.estado}</span></td><td style="font-weight:800;color:var(--mu)">${fp(p.alquiler)}</td><td style="font-weight:800;color:var(--v)">${cob>0?fp(cob):'—'}</td><td style="font-weight:900;color:var(--a)">${neto>0?fp(neto):'—'}</td><td><button class="btn v sm" onclick="abrirTransfProp(${p.id})">🏦 Liquidar</button></td></tr>`;
+  }).join('');
+}
+
+// ══ CAJA ══
+function renderCaja() {
+  const fp2 = document.getElementById('filtro-caja')?.value||'';
+  let movH = DB.movimientos.filter(m=>m.fecha===fechaHoy());
+  if(fp2) movH = movH.filter(m=>String(m.propId)===fp2);
+  let sal=0;
+  document.getElementById('tbody-caja').innerHTML = movH.length ? movH.map(m=>{
+    if(m.tipo==='ingreso') sal+=m.monto; else if(m.tipo==='egreso') sal-=m.monto;
+    return `<tr><td style="font-family:var(--mono);font-size:11px;color:var(--mu)">${m.hora}</td><td><div style="font-size:12px;font-weight:700">${m.propiedad}</div></td><td style="font-size:12px">${m.propietario}</td><td><span class="bdg ${m.tipo==='ingreso'?'v':'r'}">${m.subtipo||m.tipo}</span></td><td style="font-size:11px;color:var(--mu)">${m.concepto}</td><td style="font-weight:800;color:var(--v)">${m.tipo==='ingreso'?fp(m.monto):'—'}</td><td style="font-weight:800;color:var(--r)">${m.tipo==='egreso'?fp(m.monto):'—'}</td><td style="font-size:13px;font-weight:900;color:${sal>=0?'var(--v)':'var(--r)'}">${fp(sal)}</td></tr>`;
+  }).join('') : `<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--mu)">Sin movimientos hoy</td></tr>`;
+  actualizarStats();
+}
+
+function cerrarCaja() {
+  if(!confirm('¿Cerrar la caja del día?')) return;
+  const movH = DB.movimientos.filter(m=>m.fecha===fechaHoy());
+  const ing=movH.filter(m=>m.tipo==='ingreso').reduce((a,m)=>a+m.monto,0);
+  const eg=movH.filter(m=>m.tipo==='egreso').reduce((a,m)=>a+m.monto,0);
+  DB.cajasHist.unshift({fecha:fechaHoy(),movs:[...movH],ing,eg,saldo:ing-eg});
+  document.getElementById('caja-dot').classList.add('closed');
+  S('caja-txt','Caja CERRADA'); S('caja-sub','Cerrada a las '+horaActual());
+  document.getElementById('btn-cerrar-caja').style.display='none';
+  document.getElementById('cajas-hist').innerHTML = DB.cajasHist.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #f3f4f6"><div><div style="font-size:13px;font-weight:700">📅 ${c.fecha}</div><div style="font-size:11px;color:var(--mu)">${c.movs.length} movimientos · Ing ${fp(c.ing)} / Eg ${fp(c.eg)}</div></div><div style="font-size:16px;font-weight:900;color:${c.saldo>=0?'var(--v)':'var(--r)'}">${fp(c.saldo)}</div></div>`).join('');
+  toast('🔒 Caja cerrada y guardada');
+}
+
+// ══ PROPIETARIOS ══
+function renderPropietarios() {
+  const busq = (document.getElementById('busq-propietarios')?.value||'').toLowerCase();
+  let lista = DB.propietarios.filter(p=>!busq||p.nombre.toLowerCase().includes(busq));
+  const cont = document.getElementById('lista-propietarios');
+  if(!lista.length){cont.innerHTML='<div class="vacio"><div class="vacio-i">👤</div><div class="vacio-t">Sin propietarios</div></div>';return;}
+  const cols=['135deg,#3b82f6,#8b5cf6','135deg,#10b981,#3b82f6','135deg,#f59e0b,#ef4444','135deg,#8b5cf6,#ec4899'];
+  cont.innerHTML = lista.map(p=>{
+    const props = DB.propiedades.filter(pr=>pr.propId===p.id);
+    const totC = props.reduce((a,pr)=>a+pr.cobros.reduce((b,c)=>b+c.monto,0),0);
+    const totN = props.reduce((a,pr)=>a+calcNeto(pr),0);
+    return `<div class="pcard"><div class="pcard-h" onclick="toggleProp(${p.id})">
+      <div class="pcard-av" style="background:linear-gradient(${cols[p.id%cols.length]})">${p.nombre.charAt(0)}</div>
+      <div style="flex:1"><div class="pcard-nm">${p.nombre}</div><div class="pcard-mt">${props.length} propiedad${props.length!==1?'es':''} · ${p.tel} · ${p.email} · CUIT: ${p.cuit}</div></div>
+      <div class="pcard-sts">
+        <div class="pst"><div class="pst-v" style="color:var(--v)">${fp(totC)}</div><div class="pst-l">cobrado</div></div>
+        <div class="pst"><div class="pst-v" style="color:var(--a)">${fp(totN)}</div><div class="pst-l">a transferir</div></div>
+        <div class="pst"><div class="pst-v">${props.length}</div><div class="pst-l">propiedades</div></div>
+      </div>
+      <div class="ptog" id="ptog-${p.id}">▼</div>
+    </div>
+    <div class="pcard-b" id="pbody-${p.id}">
+      <div style="padding:12px 20px;background:var(--ac);display:flex;gap:20px;flex-wrap:wrap">
+        <div><div style="font-size:9px;font-weight:700;color:var(--a);text-transform:uppercase;margin-bottom:2px">Banco</div><div style="font-size:12px;font-weight:800">${p.banco.banco}</div></div>
+        <div><div style="font-size:9px;font-weight:700;color:var(--a);text-transform:uppercase;margin-bottom:2px">CBU</div><div style="font-family:var(--mono);font-size:11px;color:var(--a)">${p.banco.cbu}</div></div>
+        <div><div style="font-size:9px;font-weight:700;color:var(--a);text-transform:uppercase;margin-bottom:2px">Alias</div><div style="font-size:12px;font-weight:800">${p.banco.alias}</div></div>
+        <div><div style="font-size:9px;font-weight:700;color:var(--a);text-transform:uppercase;margin-bottom:2px">CUIT</div><div style="font-size:12px;font-weight:800">${p.banco.cuit}</div></div>
+        <button class="btn gh sm no-print" onclick="copiar('${p.banco.cbu}')">📋 Copiar CBU</button>
+      </div>
+      ${props.map(pr=>{const g=pr.gastos.reduce((a,x)=>a+x.monto,0);const c=pr.cobros.reduce((a,x)=>a+x.monto,0);const com=c>0?Math.round(c*pr.comPct/100):0;const net=Math.max(0,c-g-com);const bc=estadoBdg(pr.estado);return`<div class="irow" onclick="abrirTransfProp(${pr.id})"><span class="icode">${pr.codigo}</span><div style="flex:1"><div style="font-size:12px;font-weight:700">${pr.nombre}</div><div style="font-size:10px;color:var(--mu)">${pr.dir}${pr.canal?' · '+pr.canal:''}</div></div><span class="bdg ${bc}" style="margin-right:8px">${pr.estado}</span><div style="text-align:right"><div style="font-size:13px;font-weight:800;color:var(--mu)">${fp(pr.alquiler)}/mes</div>${c>0?`<div style="font-size:12px;font-weight:900;color:var(--a)">${fp(net)} neto</div>`:''}</div></div>`;}).join('')}
+      <div style="padding:12px 20px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--g)" class="no-print">
+        ${totN>0?`<button class="btn v sm" onclick="liquidarPropietario(${p.id})">🏦 Liquidar todo (${fp(totN)})</button>`:''}
+        <button class="btn gh sm" onclick="enviarCorreoAuto(${p.id},'Resumen de cuenta','Estimado ${p.nombre}, le enviamos su resumen de cuenta.')">✉️ Enviar correo</button>
+      </div>
+    </div></div>`;
+  }).join('');
+}
+
+function toggleProp(id) {
+  document.getElementById('pbody-'+id).classList.toggle('open');
+  document.getElementById('ptog-'+id).classList.toggle('open');
+}
+
+// ══ PROPIEDADES ══
+function renderPropiedades() {
+  const busq=(document.getElementById('busq-props')?.value||'').toLowerCase();
+  const fEst=document.getElementById('filtro-est-props')?.value||'';
+  let lista=DB.propiedades;
+  if(busq) lista=lista.filter(p=>p.codigo.toLowerCase().includes(busq)||p.nombre.toLowerCase().includes(busq)||prop(p.propId)?.nombre.toLowerCase().includes(busq));
+  if(fEst) lista=lista.filter(p=>p.estado===fEst);
+  document.getElementById('tbody-props').innerHTML=lista.map(p=>{const bc=estadoBdg(p.estado);return`<tr><td><span style="font-family:var(--mono);font-size:10px;background:var(--g);padding:2px 7px;border-radius:5px">${p.codigo}</span></td><td><div style="font-size:12px;font-weight:700">${p.nombre}</div><div style="font-size:10px;color:var(--mu)">📍 ${p.dir}</div></td><td style="font-size:12px;font-weight:600">${prop(p.propId)?.nombre||'—'}</td><td style="font-size:11px;color:var(--mu)">${p.tipo}</td><td><span class="bdg ${bc}">${p.estado}</span></td><td style="font-weight:800;color:var(--mu)">${fp(p.alquiler)}</td><td style="font-size:11px;color:var(--mu)">${p.canal||'—'}</td><td><div style="display:flex;gap:5px"><button class="btn gh sm" onclick="abrirTransfProp(${p.id})">Ver</button><button class="btn v sm" onclick="abrirTransfProp(${p.id})">🏦</button></div></td></tr>`;}).join('');
+}
+
+// ══ DISPONIBLES ══
+function renderDisponibles() {
+  const disp=DB.propiedades.filter(p=>['Disponible','Señado'].includes(p.estado));
+  S('disp-alq',DB.propiedades.filter(p=>p.estado==='Disponible').length);
+  S('disp-vta',DB.ventas.filter(v=>v.tipo==='Venta'&&v.estado!=='Escriturado').length);
+  S('disp-sen',DB.propiedades.filter(p=>p.estado==='Señado').length);
+  document.getElementById('tbody-disp').innerHTML=disp.length?disp.map(p=>{const bc=estadoBdg(p.estado);return`<tr><td><span style="font-family:var(--mono);font-size:10px;background:var(--g);padding:2px 7px;border-radius:5px">${p.codigo}</span></td><td><div style="font-size:12px;font-weight:700">${p.nombre}</div><div style="font-size:10px;color:var(--mu)">📍 ${p.dir}</div></td><td style="font-size:11px;color:var(--mu)">${p.tipo}</td><td><span class="bdg ${bc}">${p.estado}</span></td><td style="font-weight:800;color:var(--v)">${fp(p.alquiler)}/mes</td><td style="font-size:11px;color:var(--mu)">${p.canal||'—'}</td><td style="font-size:11px;color:var(--mu)">${p.obs||'—'}</td></tr>`;}).join(''):`<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--mu)">Sin propiedades disponibles</td></tr>`;
+}
+
+// ══ TRANSFERENCIAS ══
+function renderTransferencias() {
+  const cont=document.getElementById('lista-transf');
+  cont.innerHTML=DB.propiedades.map(p=>{
+    const cob=p.cobros.reduce((a,c)=>a+c.monto,0);const gas=p.gastos.reduce((a,g)=>a+g.monto,0);const com=cob>0?Math.round(cob*p.comPct/100):0;const neto=Math.max(0,cob-gas-com);
+    const yaT=transHoy(p); const pr=prop(p.propId);
+    return `<div style="background:var(--white);border-radius:12px;border:1px solid var(--g);box-shadow:var(--sh);margin-bottom:12px;overflow:hidden">
+      <div style="padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--g)">
+        <span style="font-family:var(--mono);font-size:10px;background:var(--g);padding:2px 7px;border-radius:5px;color:var(--mu)">${p.codigo}</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:800">${p.nombre}</div><div style="font-size:11px;color:var(--mu)">Propietario: ${pr?.nombre}</div></div>
+        <span class="bdg ${yaT?'v':cob>0?'n':'g'}">${yaT?'✅ Transferido':cob>0?'⏳ Pendiente':'Sin cobro'}</span>
+      </div>
+      <div style="padding:14px 18px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px">
+          <div style="text-align:center;background:var(--g2);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:4px">Alquiler</div><div style="font-size:15px;font-weight:900;color:var(--mu)">${fp(p.alquiler)}</div></div>
+          <div style="text-align:center;background:var(--vc);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:4px">Cobrado</div><div style="font-size:15px;font-weight:900;color:var(--v)">${fp(cob)}</div></div>
+          <div style="text-align:center;background:var(--rc);border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:4px">Desc.</div><div style="font-size:15px;font-weight:900;color:var(--r)">−${fp(gas+com)}</div></div>
+          <div style="text-align:center;background:var(--ac);border-radius:8px;padding:10px;border:1.5px solid var(--ab)"><div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:4px">NETO</div><div style="font-size:17px;font-weight:900;color:var(--a)">${fp(neto)}</div></div>
+        </div>
+        <div class="banco-box">
+          <div class="bb-t">📋 Datos para transferir</div>
+          <div class="bb-row"><span class="bb-c">Titular</span><span class="bb-v">${pr?.banco.titular}</span></div>
+          <div class="bb-row"><span class="bb-c">Banco</span><span class="bb-v">${pr?.banco.banco}</span></div>
+          <div class="bb-row"><span class="bb-c">CBU</span><span class="bb-cbu">${pr?.banco.cbu}</span></div>
+          <div class="bb-row"><span class="bb-c">Alias</span><span class="bb-v">${pr?.banco.alias}</span></div>
+          <div class="bb-row" style="border-top:1.5px solid #bfdbfe;padding-top:8px;margin-top:4px"><span class="bb-c" style="font-size:13px;font-weight:900;color:var(--a)">TRANSFERIR</span><span style="font-size:18px;font-weight:900;color:var(--a)">${fp(neto)}</span></div>
+        </div>
+        ${cob>0&&!yaT?`<div style="display:flex;gap:8px;margin-top:12px" class="no-print">
+          <button class="btn gh sm" onclick="copiar('${pr?.banco.cbu}')">📋 Copiar CBU</button>
+          <button class="btn gh sm" onclick="abrirBanco()">🏦 Ir al homebanking</button>
+          <button class="btn v" onclick="confirmarTransf(${p.id})" style="flex:1">✅ Confirmar transferencia y generar comprobante</button>
+        </div>`:yaT?`<div style="margin-top:10px" class="no-print"><button class="btn gh sm" onclick="verUltimoComp(${p.id})">📋 Ver comprobante</button></div>`:`<div style="margin-top:10px" class="no-print"><button class="btn gh sm" onclick="abrirModalCobro()">+ Registrar cobro</button></div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function abrirBanco() {
+  const bancos=[{n:'Banco Nación',u:'https://www.bancoanacion.com.ar'},{n:'Banco Galicia',u:'https://www.galicia.ar'},{n:'Banco Santander',u:'https://www.santander.com.ar'},{n:'Banco BBVA',u:'https://www.bbva.com.ar'},{n:'Banco Macro',u:'https://www.macro.com.ar'},{n:'Mercado Pago',u:'https://www.mercadopago.com.ar'}];
+  const b=bancos[Math.floor(Math.random()*bancos.length)];
+  if(confirm('¿Abrir '+b.n+'?\n\nTambién podés abrir tu homebanking directamente y pegar el CBU copiado.')) window.open(b.u,'_blank');
+}
+
+function abrirTransfProp(id) {
+  nav(document.querySelectorAll('.ni')[6],'sc-transferencias');
+  setTimeout(()=>{const el=document.querySelector(`[onclick="confirmarTransf(${id})"]`)||document.querySelector(`[onclick="abrirModalCobro()"]`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},300);
+}
+
+function confirmarTransf(id) {
+  const p=DB.propiedades.find(x=>x.id===id);const pr=prop(p.propId);
+  const cob=p.cobros.reduce((a,c)=>a+c.monto,0);if(!cob){toast('⚠️ Sin cobros');return;}
+  const gas=p.gastos.reduce((a,g)=>a+g.monto,0);const com=Math.round(cob*p.comPct/100);const neto=Math.max(0,cob-gas-com);
+  const compNum='COMP-'+String(DB.compIdC++).padStart(4,'0');
+  const t={id:Date.now(),compNum,propId:id,propiedad:p.nombre,propietario:pr?.nombre,cobrado:cob,gastos:gas,comision:com,neto,banco:{...pr?.banco},fecha:fechaHoy(),hora:horaActual(),detalleGastos:[...p.gastos],detallesCobros:[...p.cobros]};
+  p.transfs.push(t);
+  // correo automático
+  enviarCorreoAuto(p.propId,'Liquidación '+fechaHoy(),'Se realizó la transferencia de '+fp(neto)+' correspondiente a '+p.nombre+'. Cobrado: '+fp(cob)+' | Gastos: '+fp(gas)+' | Comisión: '+fp(com));
+  mostrarComp(t,p);actualizarStats();renderTransferencias();
+  toast('✅ Transferencia confirmada — '+compNum);
+}
+
+function liquidarPropietario(propietarioId) {
+  const props=DB.propiedades.filter(p=>p.propId===propietarioId&&calcNeto(p)>0&&!transHoy(p));
+  if(!props.length){toast('⚠️ Sin pagos pendientes');return;}
+  props.forEach(p=>confirmarTransf(p.id));
+}
+
+function verUltimoComp(id) {
+  const p=DB.propiedades.find(x=>x.id===id);
+  if(!p.transfs.length)return;
+  mostrarComp(p.transfs[p.transfs.length-1],p);
+}
+
+// ══ COMPROBANTE ══
+function mostrarComp(t,p) {
+  document.getElementById('comp-body').innerHTML=`<div class="comp" id="comp-print">
+    <div class="comp-hd"><div><div class="comp-logo">🏢 SGI Pro</div><div style="font-size:10px;color:var(--mu);margin-top:2px">Sistema de Gestión Inmobiliaria</div><div style="margin-top:8px"><span class="bdg v">✅ TRANSFERENCIA CONFIRMADA</span></div></div><div style="text-align:right"><div style="font-size:9px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:1px">Comprobante N°</div><div class="comp-num-v">${t.compNum}</div><div style="font-size:11px;color:var(--mu);margin-top:3px">${t.fecha} · ${t.hora}</div></div></div>
+    <div class="comp-sec"><div class="comp-sec-t">Propiedad</div><div class="crow"><span class="cc">Código</span><span class="cv">${p.codigo}</span></div><div class="crow"><span class="cc">Nombre</span><span class="cv">${t.propiedad}</span></div><div class="crow"><span class="cc">Dirección</span><span class="cv">${p.dir}</span></div></div>
+    <div class="comp-sec"><div class="comp-sec-t">Propietario</div><div class="crow"><span class="cc">Nombre</span><span class="cv">${t.propietario}</span></div><div class="crow"><span class="cc">CUIT</span><span class="cv">${prop(p.propId)?.cuit}</span></div></div>
+    <div class="comp-sec"><div class="comp-sec-t">Datos bancarios</div><div class="crow"><span class="cc">Titular</span><span class="cv">${t.banco.titular}</span></div><div class="crow"><span class="cc">Banco</span><span class="cv">${t.banco.banco}</span></div><div class="crow"><span class="cc">CBU</span><span class="cv mono">${t.banco.cbu}</span></div><div class="crow"><span class="cc">Alias</span><span class="cv">${t.banco.alias}</span></div></div>
+    <div class="comp-sec"><div class="comp-sec-t">Liquidación</div><div class="crow"><span class="cc">Cobros</span><span class="cv" style="color:var(--v)">${fp(t.cobrado)}</span></div>${t.detallesCobros.map(c=>`<div class="crow" style="padding-left:12px"><span class="cc" style="font-size:11px">→ ${c.tipo} ${c.mes}${c.inquilino?' ('+c.inquilino+')':''}</span><span class="cv" style="font-size:11px">${fp(c.monto)}</span></div>`).join('')}<div class="crow"><span class="cc">Gastos</span><span class="cv" style="color:var(--r)">− ${fp(t.gastos)}</span></div>${t.detalleGastos.map(g=>`<div class="crow" style="padding-left:12px"><span class="cc" style="font-size:11px">→ ${g.desc}</span><span class="cv" style="font-size:11px">− ${fp(g.monto)}</span></div>`).join('')}<div class="crow"><span class="cc">Comisión (${p.comPct}%)</span><span class="cv" style="color:var(--n)">− ${fp(t.comision)}</span></div></div>
+    <div class="comp-tot"><span style="font-size:12px;font-weight:800;color:#9ca3af">TOTAL TRANSFERIDO</span><span style="font-size:22px;font-weight:900;color:white">${fp(t.neto)}</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:20px;padding-top:14px;border-top:1px solid var(--g)"><div style="text-align:center;width:44%"><div style="height:1px;background:var(--osc);margin-bottom:5px"></div><div style="font-size:10px;color:var(--mu)">Firma del administrador</div></div><div style="text-align:center;width:44%"><div style="height:1px;background:var(--osc);margin-bottom:5px"></div><div style="font-size:10px;color:var(--mu)">Sello de la inmobiliaria</div></div></div>
+    <div style="text-align:center;margin-top:14px;font-size:9px;color:#9ca3af">SGI Pro · ${t.fecha} ${t.hora} · ${t.compNum}</div>
+  </div>`;
+  document.getElementById('mo-comp').classList.add('open');
+}
+
+function renderComprobantes() {
+  const todos=DB.propiedades.flatMap(p=>p.transfs.map(t=>({...t,prop:p}))).sort((a,b)=>b.id-a.id);
+  const cont=document.getElementById('lista-comp');
+  if(!todos.length){cont.innerHTML='<div class="vacio"><div class="vacio-i">📋</div><div class="vacio-t">Sin comprobantes</div></div>';return;}
+  cont.innerHTML=todos.map(t=>`<div class="card" style="margin-bottom:10px"><div style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="text-align:center;background:var(--vc);border-radius:9px;padding:8px 12px;min-width:70px"><div style="font-size:9px;font-weight:800;color:var(--v);text-transform:uppercase;margin-bottom:2px">N°</div><div style="font-size:13px;font-weight:900;color:var(--v);font-family:var(--mono)">${t.compNum}</div></div><div><div style="font-size:13px;font-weight:700">${t.propiedad}</div><div style="font-size:11px;color:var(--mu)">${t.propietario} · ${t.banco.banco} · ${t.fecha} ${t.hora}</div><div style="font-size:11px;color:var(--mu)">CBU: <span style="font-family:var(--mono);color:var(--a)">${t.banco.cbu}</span></div></div></div><div style="display:flex;align-items:center;gap:12px"><div style="text-align:right"><div style="font-size:20px;font-weight:900;color:var(--a)">${fp(t.neto)}</div><div style="font-size:10px;color:var(--mu)">Cob ${fp(t.cobrado)} − Des ${fp(t.gastos+t.comision)}</div></div><span class="bdg v">✅</span><button class="btn gh sm no-print" onclick="mostrarComp(${JSON.stringify(t).replace(/"/g,"'").replace(/'/g,'"')},${JSON.stringify(t.prop||{}).replace(/"/g,"'").replace(/'/g,'"')})">Ver</button></div></div></div>`).join('');
+}
+
+function imprimirComp() {
+  const c=document.getElementById('comp-print');if(!c)return;
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Comprobante SGI</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>body{font-family:"Plus Jakarta Sans",sans-serif;background:white;padding:20px;}.comp{max-width:560px;margin:0 auto;border:2px solid #e5e7eb;border-radius:12px;padding:24px;}.comp-hd{display:flex;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #111827;}.comp-logo{font-size:15px;font-weight:900;}.comp-num-v{font-size:17px;font-weight:900;font-family:"DM Mono",monospace;text-align:right;}.comp-sec{margin-bottom:14px;}.comp-sec-t{font-size:9px;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;}.crow{display:flex;justify-content:space-between;padding:3px 0;}.cc{font-size:12px;color:#6b7280;font-weight:600;}.cv{font-size:12px;font-weight:800;}.cv.mono{font-family:"DM Mono",monospace;color:#2563eb;}.comp-tot{background:#111827;border-radius:9px;padding:12px 15px;display:flex;justify-content:space-between;margin-top:14px;}.bdg{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#ecfdf5;color:#059669;}</style></head><body>'+c.outerHTML+'</body></html>');
+  w.document.close();setTimeout(()=>w.print(),600);
+}
+
+// ══ ESTADO PAGOS ══
+function renderEstadoPagos() {
+  let pN=0,peN=0,scN=0,pT=0,peT=0,scT=0;
+  document.getElementById('tbody-ep').innerHTML=DB.propiedades.map(p=>{
+    const cob=p.cobros.reduce((a,c)=>a+c.monto,0);const gas=p.gastos.reduce((a,g)=>a+g.monto,0);const com=cob>0?Math.round(cob*p.comPct/100):0;const neto=Math.max(0,cob-gas-com);const yaT=transHoy(p);
+    if(yaT){pN++;pT+=neto;}else if(cob>0){peN++;peT+=neto;}else{scN++;scT+=p.alquiler;}
+    const est=yaT?'<span class="bdg v">✅ Pagado</span>':cob>0?'<span class="bdg n">⏳ Pendiente</span>':'<span class="bdg r">❌ Sin cobrar</span>';
+    return`<tr><td><span style="font-family:var(--mono);font-size:10px;background:var(--g);padding:2px 7px;border-radius:5px">${p.codigo}</span></td><td><div style="font-size:12px;font-weight:700">${p.nombre}</div></td><td style="font-size:12px">${prop(p.propId)?.nombre||'—'}</td><td style="font-weight:800;color:var(--mu)">${fp(p.alquiler)}</td><td style="font-weight:800;color:var(--v)">${cob>0?fp(cob):'—'}</td><td style="font-weight:800;color:var(--r)">${gas>0?fp(gas):'—'}</td><td style="font-weight:800;color:var(--n)">${com>0?fp(com):'—'}</td><td style="font-size:14px;font-weight:900;color:var(--a)">${neto>0?fp(neto):'—'}</td><td>${est}</td></tr>`;
+  }).join('');
+  S('ep-pag',fp(pT));S('ep-pag-n',pN+' props');S('ep-pend',fp(peT));S('ep-pend-n',peN+' props');S('ep-sc',fp(scT));S('ep-sc-n',scN+' props');
+}
+
+// ══ VENTAS PIPELINE ══
+function renderVentas() {
+  const etapas=['Interesado','En negociación','Señado','Comprado','Escriturado'];
+  const cols={'Interesado':'g','En negociación':'n','Señado':'a','Comprado':'v','Escriturado':'p'};
+  document.getElementById('pipeline-ventas').innerHTML=etapas.map(e=>{
+    const items=DB.ventas.filter(v=>v.estado===e);
+    return`<div class="pipeline-col"><div class="pipeline-col-title">${e}<span class="pipeline-count">${items.length}</span></div>${items.map(v=>`<div class="pipeline-item"><div class="pi-prop">${v.propiedad}</div><div class="pi-cliente">👤 ${v.cliente}</div><div class="pi-cliente">📡 ${v.canal}</div><div class="pi-monto">${fp(v.precio)}</div></div>`).join('')}</div>`;
+  }).join('');
+  document.getElementById('tbody-ventas').innerHTML=DB.ventas.map(v=>{const bc={Interesado:'g','En negociación':'n',Señado:'a',Comprado:'v',Escriturado:'p'}[v.estado]||'g';return`<tr><td style="font-size:12px;font-weight:700">${v.propiedad}</td><td style="font-size:12px">${v.cliente}</td><td><span class="bdg ${v.tipo==='Venta'?'p':'a'}">${v.tipo}</span></td><td style="font-weight:800;color:var(--a)">${fp(v.precio)}</td><td><span class="bdg ${bc}">${v.estado}</span></td><td style="font-size:11px;color:var(--mu)">${v.canal}</td><td style="font-size:11px;font-family:var(--mono);color:var(--mu)">${v.fecha}</td></tr>`;}).join('');
+}
+
+// ══ LEADS ══
+function renderLeads() {
+  const fc=document.getElementById('fl-canal')?.value||'';const fe=document.getElementById('fl-est')?.value||'';
+  let lista=[...DB.leads].reverse();
+  if(fc) lista=lista.filter(l=>l.canal===fc);if(fe) lista=lista.filter(l=>l.estado===fe);
+  S('l-tot',DB.leads.length);S('l-cer',DB.leads.filter(l=>l.estado==='Cerrado').length);S('l-neg',DB.leads.filter(l=>l.estado==='En negociación').length);
+  const pc={};DB.leads.forEach(l=>pc[l.canal]=(pc[l.canal]||0)+1);const top=Object.entries(pc).sort((a,b)=>b[1]-a[1])[0];
+  S('l-ctop',top?top[0]:'—');
+  document.getElementById('canales-bars').innerHTML=Object.entries(pc).sort((a,b)=>b[1]-a[1]).map(([c,n])=>{const pct=Math.round(n/DB.leads.length*100);return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;font-weight:700">${c}</span><span style="font-size:11px;font-weight:800;color:var(--a)">${n} (${pct}%)</span></div><div style="background:var(--g);border-radius:99px;height:7px"><div style="background:var(--a);border-radius:99px;height:7px;width:${pct}%"></div></div></div>`;}).join('')||'<div style="font-size:12px;color:var(--mu);text-align:center;padding:12px">Sin datos</div>';
+  const cont=document.getElementById('lista-leads');
+  if(!lista.length){cont.innerHTML='<div class="vacio" style="padding:28px 0"><div class="vacio-i" style="font-size:28px">📡</div><div class="vacio-t" style="font-size:13px">Sin leads</div></div>';return;}
+  const eb={Interesado:'g','En negociación':'n',Señado:'a',Cerrado:'v',Perdido:'r'};
+  cont.innerHTML=lista.map(l=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6"><div style="flex:1"><div style="font-size:13px;font-weight:800">👤 ${l.nombre}</div><div style="font-size:11px;color:var(--mu)">${l.canal} · ${l.busca} · ${l.tel||'—'}${l.origen?' · '+l.origen:''}</div>${l.notas?`<div style="font-size:11px;color:var(--mu);margin-top:2px">📝 ${l.notas}</div>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><span class="bdg ${eb[l.estado]||'g'}">${l.estado}</span><div style="font-size:10px;color:#9ca3af">${l.fecha}</div></div></div>`).join('');
+}
+
+// ══ REDES ══
+function renderRedes() {
+  const redes={};DB.publicaciones.forEach(p=>{if(!redes[p.red])redes[p.red]={icon:redIcon(p.red),count:0,props:[]};redes[p.red].count++;if(!redes[p.red].props.includes(p.propiedad))redes[p.red].props.push(p.propiedad);});
+  const redList=Object.entries(redes);
+  document.getElementById('redes-stats').innerHTML=`<style>.sg4{grid-template-columns:repeat(${Math.min(4,redList.length||1)},1fr)}</style>`+redList.slice(0,4).map(([r,d])=>`<div class="stc a"><div class="stc-l">${d.icon} ${r}</div><div class="stc-v a">${d.count}</div><div class="stc-s">${d.props.length} props</div></div>`).join('');
+  if(!DB.publicaciones.length){document.getElementById('lista-redes').innerHTML='<div class="vacio"><div class="vacio-i">📱</div><div class="vacio-t">Sin publicaciones</div><div class="vacio-s">Registrá dónde publicaste cada propiedad</div></div>';return;}
+  // agrupar por propiedad
+  const porProp={};DB.publicaciones.forEach(p=>{if(!porProp[p.propiedad])porProp[p.propiedad]=[];porProp[p.propiedad].push(p);});
+  document.getElementById('lista-redes').innerHTML=Object.entries(porProp).map(([prop,pubs])=>`<div class="red-item"><div class="red-h"><div style="flex:1"><div class="red-nombre">${prop}</div><div class="red-meta">${pubs.length} publicación${pubs.length!==1?'es':''}</div></div></div><div class="red-props">${pubs.map(p=>`<div class="red-prop-tag">${redIcon(p.red)} ${p.red} — ${p.tipo}${p.link?` <a href="${p.link}" target="_blank" style="color:var(--a)">Ver</a>`:''}</div>`).join('')}</div></div>`).join('');
+}
+
+function redIcon(r){const m={Facebook:'📘',Instagram:'📸',YouTube:'📺',TikTok:'🎵','Web propia':'🌐',ZonaProp:'🏠','Publicidad gráfica':'📰'};return m[r]||'📱';}
+
+// ══ CORREOS ══
+function renderCorreos() {
+  const cont=document.getElementById('lista-correos');
+  if(!DB.correos.length){cont.innerHTML='<div class="vacio"><div class="vacio-i">✉️</div><div class="vacio-t">Sin correos enviados</div></div>';return;}
+  cont.innerHTML=[...DB.correos].reverse().map(c=>`<div class="correo-item"><div class="correo-icon">✉️</div><div><div class="correo-asunto">${c.asunto}</div><div class="correo-det">Para: ${c.para} · ${c.fecha} ${c.hora}</div><div class="correo-det" style="margin-top:3px">${c.mensaje.substring(0,80)}${c.mensaje.length>80?'...':''}</div></div><div class="correo-hora"><span class="bdg v">Enviado</span></div></div>`).join('');
+}
+
+function enviarCorreoAuto(propietarioId,asunto,mensaje) {
+  const pr=DB.propietarios.find(p=>p.id===propietarioId);if(!pr)return;
+  DB.correos.push({id:Date.now(),para:pr.nombre,email:pr.email,asunto,mensaje,fecha:fechaHoy(),hora:horaActual(),auto:true});
+  document.getElementById('nb-correos').textContent=DB.correos.length;
+  toast('✉️ Correo enviado a '+pr.nombre);
+}
+
+// ══ OPERADORES ══
+function renderOperadores() {
+  const cont=document.getElementById('lista-operadores');
+  const cols=['linear-gradient(135deg,#3b82f6,#8b5cf6)','linear-gradient(135deg,#f59e0b,#ef4444)','linear-gradient(135deg,#10b981,#3b82f6)','linear-gradient(135deg,#8b5cf6,#ec4899)'];
+  cont.innerHTML=DB.operadores.map((o,i)=>`<div class="card" style="margin-bottom:10px"><div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><div style="width:42px;height:42px;border-radius:50%;background:${cols[i%cols.length]};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:white">${o.nombre.charAt(0)}</div><div><div style="font-size:14px;font-weight:800">${o.nombre}</div><div style="font-size:12px;color:var(--mu)">${o.zona} · ${o.tel} · ${o.email}</div></div></div><div style="display:flex;align-items:center;gap:10px"><div style="text-align:center"><div style="font-size:9px;color:var(--mu);font-weight:700;text-transform:uppercase">Leads</div><div style="font-size:18px;font-weight:900;color:var(--a)">${DB.leads.filter(l=>l.operador===o.nombre).length}</div></div><span class="bdg v">Activo</span></div></div></div>`).join('');
+}
+
+// ══ REPORTES ══
+function reporteMes() {
+  const mes=document.getElementById('rep-mes').value;
+  const movs=DB.movimientos.filter(m=>m.concepto?.includes(mes));
+  const ing=movs.filter(m=>m.tipo==='ingreso').reduce((a,m)=>a+m.monto,0);
+  const eg=movs.filter(m=>m.tipo==='egreso').reduce((a,m)=>a+m.monto,0);
+  document.getElementById('rep-resultado').innerHTML=`<div class="card" style="padding:18px"><div style="font-size:15px;font-weight:800;margin-bottom:14px">📅 Reporte ${mes}</div><div class="sg sg3" style="margin-bottom:14px"><div class="stc v"><div class="stc-l">Ingresos</div><div class="stc-v v">${fp(ing)}</div></div><div class="stc r"><div class="stc-l">Egresos</div><div class="stc-v r">${fp(eg)}</div></div><div class="stc a"><div class="stc-l">Saldo neto</div><div class="stc-v a">${fp(ing-eg)}</div></div></div>${movs.map(m=>mrow(m)).join('')||'<div style="color:var(--mu);font-size:12px;text-align:center;padding:16px">Sin movimientos en este período</div>'}</div>`;
+}
+
+function reportePropietario() {
+  const id=parseInt(document.getElementById('rep-prop').value);if(!id){toast('⚠️ Elegí propietario');return;}
+  const pr=DB.propietarios.find(p=>p.id===id);const props=DB.propiedades.filter(p=>p.propId===id);
+  const movs=DB.movimientos.filter(m=>props.some(p=>p.id===m.propId));
+  const ing=movs.filter(m=>m.tipo==='ingreso').reduce((a,m)=>a+m.monto,0);const eg=movs.filter(m=>m.tipo==='egreso').reduce((a,m)=>a+m.monto,0);const neto=props.reduce((a,p)=>a+calcNeto(p),0);
+  document.getElementById('rep-resultado').innerHTML=`<div class="card" style="padding:18px"><div style="font-size:15px;font-weight:800;margin-bottom:4px">👤 ${pr.nombre}</div><div style="font-size:11px;color:var(--mu);margin-bottom:14px">${pr.tel} · ${pr.email} · ${props.length} propiedades</div><div class="sg sg3" style="margin-bottom:14px"><div class="stc v"><div class="stc-l">Ingresos</div><div class="stc-v v">${fp(ing)}</div></div><div class="stc r"><div class="stc-l">Egresos</div><div class="stc-v r">${fp(eg)}</div></div><div class="stc a"><div class="stc-l">A transferir</div><div class="stc-v a">${fp(neto)}</div></div></div>${movs.map(m=>mrow(m)).join('')||'<div style="color:var(--mu);font-size:12px;text-align:center;padding:16px">Sin movimientos</div>'}</div>`;
+}
+
+// ══ GUARDAR COBRO ══
+function guardarCobro() {
+  const propId=parseInt(document.getElementById('mc-prop').value);const monto=parseFloat(document.getElementById('mc-monto').value)||0;
+  const tipo=document.getElementById('mc-tipo').value;const mes=document.getElementById('mc-mes').value;const obs=document.getElementById('mc-obs').value;const inq=document.getElementById('mc-inq').value;
+  if(!propId){toast('⚠️ Elegí la propiedad');return;}if(!monto||monto<=0){toast('⚠️ Ingresá el monto');return;}
+  const p=DB.propiedades.find(x=>x.id===propId);const pr=prop(p.propId);
+  p.cobros.push({id:Date.now(),tipo,mes,monto,inquilino:inq,obs,fecha:fechaHoy(),hora:horaActual()});
+  DB.movimientos.push({id:Date.now(),tipo:'ingreso',subtipo:tipo,propId,propietarioId:p.propId,propiedad:p.nombre,propietario:pr?.nombre||'',concepto:`${tipo} ${mes}${inq?' — '+inq:''}${obs?' | '+obs:''}`,monto,hora:horaActual(),fecha:fechaHoy()});
+  // correo automático al propietario
+  enviarCorreoAuto(p.propId,`Cobro registrado — ${p.nombre}`,`Se registró un cobro de ${fp(monto)} correspondiente a ${tipo} ${mes} de la propiedad ${p.nombre}. Inquilino: ${inq||'—'}`);
+  cerrarModales();limpiar(['mc-prop','mc-monto','mc-obs','mc-inq']);
+  actualizarStats();renderInicio();poblarTodo();
+  toast(`✅ Cobro registrado — ${fp(monto)}`);
+}
+
+// ══ GUARDAR GASTO ══
+function guardarGasto() {
+  const propId=parseInt(document.getElementById('mg-prop').value);const monto=parseFloat(document.getElementById('mg-monto').value)||0;
+  const tipo=document.getElementById('mg-tipo').value;const desc=document.getElementById('mg-desc').value;const comp2=document.getElementById('mg-comp').value;
+  if(!propId){toast('⚠️ Elegí la propiedad');return;}if(!monto||monto<=0){toast('⚠️ Ingresá el monto');return;}if(!desc){toast('⚠️ Describí el gasto');return;}
+  const p=DB.propiedades.find(x=>x.id===propId);const pr=prop(p.propId);
+  p.gastos.push({id:Date.now(),tipo,desc,monto,comp:comp2,fecha:fechaHoy(),hora:horaActual()});
+  DB.movimientos.push({id:Date.now(),tipo:'egreso',subtipo:tipo,propId,propietarioId:p.propId,propiedad:p.nombre,propietario:pr?.nombre||'',concepto:`${tipo}: ${desc}${comp2?' ('+comp2+')':''}`,monto,hora:horaActual(),fecha:fechaHoy()});
+  enviarCorreoAuto(p.propId,`Gasto imputado — ${p.nombre}`,`Se imputó un gasto de ${fp(monto)} a la propiedad ${p.nombre}. Detalle: ${desc}`);
+  cerrarModales();limpiar(['mg-prop','mg-monto','mg-desc','mg-comp']);
+  actualizarStats();renderInicio();poblarTodo();
+  toast(`✅ Gasto imputado — ${fp(monto)}`);
+}
+
+// ══ GUARDAR LEAD ══
+function guardarLead() {
+  const nombre=document.getElementById('ml-nombre').value.trim();if(!nombre){toast('⚠️ Ingresá el nombre');return;}
+  DB.leads.push({id:Date.now(),nombre,tel:document.getElementById('ml-tel').value,canal:document.getElementById('ml-canal').value,busca:document.getElementById('ml-busca').value,propId:parseInt(document.getElementById('ml-prop').value)||null,estado:document.getElementById('ml-estado').value,operador:document.getElementById('ml-op').value,origen:document.getElementById('ml-origen').value,notas:document.getElementById('ml-notas').value,fecha:fechaHoy()});
+  cerrarModales();limpiar(['ml-nombre','ml-tel','ml-op','ml-origen','ml-notas']);
+  renderLeads();renderInicio();poblarTodo();toast('✅ Lead registrado');
+}
+
+// ══ GUARDAR VENTA ══
+function guardarVenta() {
+  const propId=parseInt(document.getElementById('mv-prop').value);const cliente=document.getElementById('mv-cliente').value.trim();if(!cliente){toast('⚠️ Ingresá el cliente');return;}
+  const p=DB.propiedades.find(x=>x.id===propId);
+  DB.ventas.push({id:Date.now(),propiedad:p?p.nombre:'—',propId,cliente,tipo:document.getElementById('mv-tipo').value,estado:document.getElementById('mv-estado').value,precio:parseFloat(document.getElementById('mv-precio').value)||0,canal:document.getElementById('mv-canal').value,tel:document.getElementById('mv-tel').value,email:document.getElementById('mv-email').value,notas:document.getElementById('mv-notas').value,fecha:fechaHoy()});
+  if(p&&document.getElementById('mv-estado').value==='Señado') p.estado='Señado';
+  if(p&&document.getElementById('mv-estado').value==='Comprado') p.estado='Vendido';
+  cerrarModales();limpiar(['mv-cliente','mv-precio','mv-tel','mv-email','mv-notas']);
+  renderVentas();poblarTodo();toast('✅ Operación registrada');
+}
+
+// ══ GUARDAR PUBLICACION ══
+function guardarPublicacion() {
+  const propId=parseInt(document.getElementById('mp-prop').value);
+  const p=DB.propiedades.find(x=>x.id===propId);
+  DB.publicaciones.push({id:Date.now(),propId,propiedad:p?p.nombre:'—',red:document.getElementById('mp-red').value,tipo:document.getElementById('mp-tipo').value,link:document.getElementById('mp-link').value,notas:document.getElementById('mp-notas').value,fecha:fechaHoy()});
+  cerrarModales();limpiar(['mp-prop','mp-link','mp-notas']);
+  renderRedes();toast('✅ Publicación registrada');
+}
+
+// ══ CORREO MANUAL ══
+function enviarCorreo() {
+  const propId=parseInt(document.getElementById('mcor-prop').value);const asunto=document.getElementById('mcor-asunto').value.trim();const msg=document.getElementById('mcor-msg').value.trim();
+  if(!asunto||!msg){toast('⚠️ Completá asunto y mensaje');return;}
+  const pr=DB.propietarios.find(p=>p.id===propId);
+  DB.correos.push({id:Date.now(),para:pr?pr.nombre:'—',email:pr?pr.email:'—',asunto,mensaje:msg,fecha:fechaHoy(),hora:horaActual(),auto:false});
+  cerrarModales();limpiar(['mcor-asunto','mcor-msg']);
+  renderCorreos();renderInicio();document.getElementById('nb-correos').textContent=DB.correos.length;
+  toast('✉️ Correo registrado');
+}
+
+// ══ GUARDAR PROPIEDAD ══
+function guardarPropiedad() {
+  const nombre=document.getElementById('np-nombre').value.trim();if(!nombre){toast('⚠️ Nombre requerido');return;}
+  const propietarioId=parseInt(document.getElementById('np-prop-sel').value);if(!propietarioId){toast('⚠️ Elegí propietario');return;}
+  const codigo='P'+String(DB.propIdC).padStart(3,'0');
+  DB.propiedades.push({id:DB.propIdC++,codigo,nombre,dir:document.getElementById('np-dir').value,tipo:document.getElementById('np-tipo').value,estado:document.getElementById('np-estado').value,alquiler:parseFloat(document.getElementById('np-alquiler').value)||0,comPct:parseFloat(document.getElementById('np-com').value)||10,canal:document.getElementById('np-canal').value,propId:propietarioId,obs:document.getElementById('np-obs').value,cobros:[],gastos:[],transfs:[]});
+  limpiar(['np-nombre','np-dir','np-obs','np-alquiler']);document.getElementById('np-com').value='10';
+  poblarTodo();actualizarStats();toast('✅ Propiedad agregada — '+codigo);
+  nav(document.querySelectorAll('.ni')[4],'sc-propiedades');
+}
+
+// ══ GUARDAR PROPIETARIO ══
+function guardarPropietario() {
+  const nombre=document.getElementById('npp-nombre').value.trim();if(!nombre){toast('⚠️ Nombre requerido');return;}
+  const cbu=document.getElementById('npp-cbu').value.trim();if(!cbu){toast('⚠️ CBU requerido');return;}
+  DB.propietarios.push({id:DB.propietIdC++,nombre,tel:document.getElementById('npp-tel').value,email:document.getElementById('npp-email').value,cuit:document.getElementById('npp-cuit').value,banco:{titular:document.getElementById('npp-titular').value||nombre,banco:document.getElementById('npp-banco').value,cbu,alias:document.getElementById('npp-alias').value,cuit:document.getElementById('npp-banco-cuit').value}});
+  limpiar(['npp-nombre','npp-tel','npp-email','npp-cuit','npp-titular','npp-cbu','npp-alias','npp-banco-cuit']);
+  poblarTodo();toast('✅ Propietario agregado — '+nombre);
+  nav(document.querySelectorAll('.ni')[3],'sc-propietarios');
+}
+
+// ══ GUARDAR OPERADOR ══
+function guardarOperador() {
+  const nombre=document.getElementById('mop-nombre').value.trim();if(!nombre){toast('⚠️ Nombre requerido');return;}
+  DB.operadores.push({id:Date.now(),nombre,zona:document.getElementById('mop-zona').value,tel:document.getElementById('mop-tel').value,email:document.getElementById('mop-email').value});
+  cerrarModales();limpiar(['mop-nombre','mop-zona','mop-tel','mop-email']);
+  renderOperadores();toast('✅ Operador agregado');
+}
+
+// ══ LIQUIDAR TODO ══
+function liquidarTodo() {
+  const pend=DB.propiedades.filter(p=>calcNeto(p)>0&&!transHoy(p));if(!pend.length){toast('⚠️ Sin transferencias pendientes');return;}
+  let html='';let tot=0;
+  pend.forEach(p=>{const n=calcNeto(p);tot+=n;const pr=prop(p.propId);html+=`<div style="background:var(--g2);border-radius:10px;padding:14px;margin-bottom:10px;border:1.5px solid var(--g)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:13px;font-weight:800">${p.nombre}</div><div style="font-size:11px;color:var(--mu)">${pr?.nombre}</div></div><div style="font-size:18px;font-weight:900;color:var(--a)">${fp(n)}</div></div><div style="background:var(--ac);border-radius:8px;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px"><div><span style="font-size:9px;color:var(--mu);font-weight:700;text-transform:uppercase">Titular</span><div style="font-size:12px;font-weight:800">${pr?.banco.titular}</div></div><div><span style="font-size:9px;color:var(--mu);font-weight:700;text-transform:uppercase">Banco</span><div style="font-size:12px;font-weight:800">${pr?.banco.banco}</div></div><div style="grid-column:1/-1"><span style="font-size:9px;color:var(--mu);font-weight:700;text-transform:uppercase">CBU</span><div style="font-family:var(--mono);font-size:11px;color:var(--a)">${pr?.banco.cbu}</div></div></div></div>`;});
+  html+=`<div style="background:var(--osc);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:800;color:#9ca3af">TOTAL A TRANSFERIR</span><span style="font-size:22px;font-weight:900;color:white">${fp(tot)}</span></div>`;
+  document.getElementById('todo-body').innerHTML=html;
+  document.getElementById('mo-todo').classList.add('open');
+}
+
+// ══ CSV ══
+function exportarCSV() {
+  let csv='Fecha,Hora,Tipo,Propiedad,Propietario,Concepto,Monto\n';
+  DB.movimientos.forEach(m=>csv+=`"${m.fecha}","${m.hora}","${m.tipo}","${m.propiedad}","${m.propietario}","${m.concepto}","${m.monto}"\n`);
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='sgi_'+fechaHoy().replace(/\//g,'-')+'.csv';a.click();toast('📥 CSV exportado');
+}
+
+function exportarLiquidaciones() {
+  const pend=DB.propiedades.filter(p=>calcNeto(p)>0);let csv='Propiedad,Propietario,Cobrado,Gastos,Comision,Neto,Banco,CBU\n';
+  pend.forEach(p=>{const pr=prop(p.propId);const c=p.cobros.reduce((a,x)=>a+x.monto,0);const g=p.gastos.reduce((a,x)=>a+x.monto,0);const com=Math.round(c*p.comPct/100);const n=Math.max(0,c-g-com);csv+=`"${p.nombre}","${pr?.nombre}","${c}","${g}","${com}","${n}","${pr?.banco.banco}","${pr?.banco.cbu}"\n`;});
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='liquidaciones_'+fechaHoy().replace(/\//g,'-')+'.csv';a.click();toast('📥 CSV exportado');
+}
+
+// ══ MODALES ══
+function abrirModalCobro(){poblarTodo();document.getElementById('mo-cobro').classList.add('open');}
+function abrirModalGasto(){poblarTodo();document.getElementById('mo-gasto').classList.add('open');}
+function abrirModalLead(){poblarTodo();document.getElementById('mo-lead').classList.add('open');}
+function abrirModalVenta(){poblarTodo();document.getElementById('mo-venta').classList.add('open');}
+function abrirModalPublicacion(){poblarTodo();document.getElementById('mo-pub').classList.add('open');}
+function abrirModalCorreo(){poblarTodo();document.getElementById('mo-correo').classList.add('open');}
+function abrirModalOperador(){document.getElementById('mo-operador').classList.add('open');}
+function cerrarModales(){document.querySelectorAll('.mo').forEach(m=>m.classList.remove('open'));}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mo'))cerrarModales();});
+
+// ══ UTILS ══
+function S(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+function fp(n){return'$'+Math.round(n||0).toLocaleString('es-AR');}
+function horaActual(){const h=new Date();return h.getHours().toString().padStart(2,'0')+':'+h.getMinutes().toString().padStart(2,'0');}
+function fechaHoy(){const h=new Date();return h.getDate().toString().padStart(2,'0')+'/'+(h.getMonth()+1).toString().padStart(2,'0')+'/'+h.getFullYear();}
+function limpiar(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
+function prop(id){return DB.propietarios.find(p=>p.id===id);}
+function estadoBdg(e){return e==='Alquilado'?'v':e==='Disponible'?'g':e==='Señado'?'a':e==='Vendido'?'p':'n';}
+function copiar(txt){navigator.clipboard.writeText(txt).then(()=>toast('✅ Copiado')).catch(()=>toast('✅ Copiar: '+txt));}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
